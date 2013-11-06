@@ -29,7 +29,10 @@ class Bras:
 
     # retourne l'espérance. Nécessaire pour les algorithmes.
     def esperanceCalculee(self):
-        return self.gainObtenu / self.nbFoisActionne
+        if self.nbFoisActionne == 0:
+            return 0
+        else
+            return self.gainObtenu / self.nbFoisActionne
 
     # retourne la VERITABLE espérance
     def esperanceVeritable(self):
