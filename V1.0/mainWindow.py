@@ -10,16 +10,18 @@ class MainWindow(QtGui.QMainWindow):
         
         super(MainWindow, self).__init__()
         
-        self.centralWidget = gameZone.GameZone(10, 50)
-        self.initCentralWidget()
+        self.centralWidget = None
+        self.initCentralWidget(10, 50)
         self.initMenuBar()
         self.initStatusBar()
         self.show()
         
 
-    def initCentralWidget(self):
+    def initCentralWidget(self, bras, nombreCoups):
         """Méthode d'initialisation"""
         
+        self.centralWidget = gameZone.GameZone(bras, nombreCoups)
+
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
         
@@ -52,20 +54,6 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar()
 
 
-    def showDialogArmNumber(self):
-        """Boite de dialogue demandant le nombre de bras"""
-        
-        text, value = QtGui.QInputDialog.getText(self, 'Nombre de bras', "Choisissez un nombre de bras :")
-        
-        try :
-            text = int(text)
-        except ValueError :
-            pass
-
-        if value & isinstance(text, int):
-            sender = self.sender()
-            #sender.triggered.connect(gameZone.GameZone.hey)
-            
     def fileMenu(self, menuBar):
         """Création de l'onglet Fichier de la menu bar"""
         
@@ -83,7 +71,7 @@ class MainWindow(QtGui.QMainWindow):
         
         editMenu = menuBar.addMenu("Edition")
         configurationAction = QtGui.QAction("Configuration", editMenu)
-        exitAction.triggered.connect(showDialogConfiguration)
+        configurationAction.triggered.connect(self.showDialogConfiguration)
         editMenu.addAction(configurationAction)
         
 
@@ -91,21 +79,72 @@ class MainWindow(QtGui.QMainWindow):
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
         
-        gridLayout = QtGui.QGridLayout(self)
-      
-        nombreBras = QtGui.QInputDialog()
-        text, value = nombreBras.getText(self, 'Nombre de bras', "Choisissez un nombre de bras :")
-        
-        try :
-            text = int(text)
-        except ValueError :
-            pass
+        nbBras, nbCoups = self.centralWidget.bras, self.centralWidget.nbCoups
 
-        if value & isinstance(text, int):
-            sender = self.sender()
-            #sender.triggered.connect(gameZone.GameZone.hey)
-            
-        gridLayout.addWidget(nombreBras)
+        configurationFrame = QtGui.QDialog(self)
+        configurationFrame.setWindowTitle("Fenêtre de configuration")
+        gridLayout = QtGui.QGridLayout()
+        gridLayout.setSpacing(10)
+        
+        font = QtGui.QFont("Times", 14, QtGui.QFont.Bold, True)
+        font.setUnderline(True)
+
+        nombreBrasLabel = QtGui.QLabel("Nombre de bras : ")
+        nombreCoupsLabel = QtGui.QLabel("Nombre de coups : ")
+        nombreBras = QtGui.QLineEdit()
+        nombreCoups = QtGui.QLineEdit()
+        algorithmeLabel = QtGui.QLabel("Algorithmes")
+        algoJoueur = QtGui.QCheckBox("Joueur")
+        algoHasard = QtGui.QCheckBox("Hasard")
+        algoGlouton = QtGui.QCheckBox("Glouton")
+        algoEpsilonGlouton = QtGui.QCheckBox("Epsilon glouton")
+        validate = QtGui.QPushButton("Valider")
+        cancel = QtGui.QPushButton("Annuler")
+
+        algoJoueur.setChecked(True)
+        algoHasard.setChecked(True)
+        algoGlouton.setChecked(True)
+        algoEpsilonGlouton.setChecked(True)
+
+        algorithmeLabel.setFont(font)
+
+        gridLayout.addWidget(nombreBrasLabel, 0, 0)
+        gridLayout.addWidget(nombreBras, 0, 1)
+        gridLayout.addWidget(nombreCoupsLabel, 1, 0)
+        gridLayout.addWidget(nombreCoups, 1, 1)
+        gridLayout.addWidget(algorithmeLabel, 2, 0, 1, 0, QtCore.Qt.AlignCenter)
+        gridLayout.addWidget(algoJoueur, 3, 0)
+        gridLayout.addWidget(algoHasard, 3, 1)
+        gridLayout.addWidget(algoGlouton, 4, 0)
+        gridLayout.addWidget(algoEpsilonGlouton, 4, 1)
+        gridLayout.addWidget(cancel, 5, 0)
+        gridLayout.addWidget(validate, 5, 1)
+
+        nombreBras.setText(str(self.centralWidget.bras))
+        nombreCoups.setText(str(self.centralWidget.nbCoups))
+
+        if nombreBras.isModified() :
+            try :
+                nbBras = int(nombreBras.displayText())
+                print(nbBras)
+            except ValueError :
+                nombreBras.setText(str(self.centralWidget.bras))
+        
+        if nombreCoups.isModified() :
+            try :
+                nbCoups = int(nombreCoups.displayText())
+            except ValueError :
+                nombreCoups.setText(str(self.centralWidget.nbCoups))
+
+        # Events
+        cancel.clicked.connect(configurationFrame.close)
+        #validate.clicked.connect(lambda : self.initCentralWidget(nbBras, nbCoups))
+
+        configurationFrame.setLayout(gridLayout)
+        configurationFrame.setFixedSize(configurationFrame.sizeHint())
+        configurationFrame.show()
+
+
 
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
