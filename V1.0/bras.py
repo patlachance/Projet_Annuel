@@ -31,7 +31,7 @@ class Bras:
     def esperanceCalculee(self):
         if self.nbFoisActionne == 0:
             return 0
-        else
+        else:
             return self.gainObtenu / self.nbFoisActionne
 
     # retourne la VERITABLE espérance
