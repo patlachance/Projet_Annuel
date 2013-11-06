@@ -45,6 +45,7 @@ class Algorithme:
         if self.numAlgo == 3:
             res = self.algoGloutonEpsilon()
 
+        print(res)
         self.actionnerBras(res)
 
     def lancerAlgoEntierement(self):

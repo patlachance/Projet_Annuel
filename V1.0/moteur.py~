@@ -20,7 +20,7 @@ class Moteur:
         algoJoueur = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 0)
         self.listAlgorithme.append(algoJoueur) # joueur
 
-        algoHasard = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 3)
+        algoHasard = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 2)
         self.listAlgorithme.append(algoHasard) # algo
         
 
