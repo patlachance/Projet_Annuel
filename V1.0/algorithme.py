@@ -123,7 +123,7 @@ class Algorithme:
             #calcul de la somme des espérances
             sumEsperance = 0
             for i in range(0,len(self.listBras)):
-                sumEsperance += esperanceCalculee(i)
+                sumEsperance += self.esperanceCalculee(i)
 
             # nombre aléatoire calcul
             r = random.uniform(0,sumEsperance)
@@ -132,7 +132,7 @@ class Algorithme:
             i=0
 
             while somme < r:
-                somme += esperanceCalculee(i)        
+                somme += self.esperanceCalculee(i)        
                 if somme >= r:
                     res = i
                 else:
