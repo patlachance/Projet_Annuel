@@ -5,11 +5,12 @@ import moteur
 
 class GameZone(QtGui.QWidget):
     
-    def __init__(self,bras,nbCoups):
+    def __init__(self,bras,nbCoups,listAlgo):
         super(GameZone, self).__init__()
         self.bras=bras
-        self.nbCoups = nbCoups       
-        self.moteurJeu = moteur.Moteur(bras, nbCoups)
+        self.nbCoups = nbCoups
+        self.listAlgo = listAlgo    
+        self.moteurJeu = moteur.Moteur(bras, nbCoups, listAlgo)
         self.initUI()
        
 
@@ -101,12 +102,23 @@ class GameZone(QtGui.QWidget):
 
         cadreGainAlgo = QtGui.QGridLayout()
         cadreGainAlgo.setColumnStretch(3,1)
-        
-        labelAlgo1 = QtGui.QLabel("Gain Algo hasard")
-        cadreGainAlgo.addWidget(labelAlgo1,0,0)        
 
-        self.resultatAlgo1 = QtGui.QLabel(format(0,'.2f'))
-        cadreGainAlgo.addWidget(self.resultatAlgo1,0,1)
+        self.listResAlgo = []
+        
+        for i in  range(1,len(self.listAlgo)):
+
+            if self.listAlgo[i] == 1:
+                labelAlgo = QtGui.QLabel("Gain Algo hasard")
+                cadreGainAlgo.addWidget(labelAlgo,i-1,0)
+            if self.listAlgo[i] == 2:
+                labelAlgo = QtGui.QLabel("Gain Algo Glouton")
+                cadreGainAlgo.addWidget(labelAlgo,i-1,0)
+            if self.listAlgo[i] == 3:
+                labelAlgo = QtGui.QLabel("Gain Algo Espilon")
+                cadreGainAlgo.addWidget(labelAlgo,i-1,0)        
+
+            self.listResAlgo.append(QtGui.QLabel(format(0,'.2f')))
+            cadreGainAlgo.addWidget(self.listResAlgo[i-1],i-1,1)
 
         algo = QtGui.QHBoxLayout()
         algo.addLayout(cadreGainAlgo)
@@ -138,7 +150,8 @@ class GameZone(QtGui.QWidget):
         self.nombreFoisJoueBras[num].setText(str(self.moteurJeu.nombreFoisJoueBrasJoueur(num)))
         self.resultatGain.setText(str(format(self.moteurJeu.gain(0),'.2f')))
         self.resultatNbCoupsJoue.setText(str(self.moteurJeu.nombreCoupsJoue()))
-        self.resultatAlgo1.setText(str(format(self.moteurJeu.gain(1),'.2f')))
+        for i in  range(1,len(self.listAlgo)):
+            self.listResAlgo[i-1].setText(str(format(self.moteurJeu.gain(i),'.2f')))
         if self.moteurJeu.nombreCoupsJoue() == self.nbCoups:
             self.labelGainEspere.setVisible(True)
             self.resultatGainEspere.setVisible(True)

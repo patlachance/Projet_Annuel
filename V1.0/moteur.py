@@ -4,7 +4,7 @@ import algorithme
 class Moteur:
     """Représente le moteur"""
 
-    def __init__(self, nbBras, nbCoupsMax):
+    def __init__(self, nbBras, nbCoupsMax, listAlgo):
 
         self.nbBras = nbBras
         self.nbCoupsMax = nbCoupsMax
@@ -17,11 +17,8 @@ class Moteur:
 
         #initialisation des algorithmes.
 
-        algoJoueur = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 0)
-        self.listAlgorithme.append(algoJoueur) # joueur
-
-        algoHasard = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 3)
-        self.listAlgorithme.append(algoHasard) # algo
+        for i in range(0,len(listAlgo)):
+            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, listAlgo[i]))
         
 
     # Cette fonction retourne l'espérance du bras demandé pour le joueur.
