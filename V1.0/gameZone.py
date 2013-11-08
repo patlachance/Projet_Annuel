@@ -58,12 +58,14 @@ class GameZone(QtGui.QWidget):
         cadreJoueur.setRowStretch(0,1)
         cadreJoueur.setColumnStretch(6,1)
 
+        self.listBout = []
+
         for i in range(0,self.bras):
-            bout=QtGui.QPushButton(str(i+1))
-            bout.setIcon(icon)
-            bout.setIconSize(QtCore.QSize(50,50))
-            bout.clicked.connect(self.buttonClicked)
-            cadreJoueur.addWidget(bout,1,i)
+            self.listBout.append(QtGui.QPushButton(str(i+1)))
+            self.listBout[i].setIcon(icon)
+            self.listBout[i].setIconSize(QtCore.QSize(50,50))
+            self.listBout[i].clicked.connect(self.buttonClicked)
+            cadreJoueur.addWidget(self.listBout[i],1,i)
                
         labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
         labelGainMoyenBras.setStyleSheet("border: 0px;")
@@ -158,4 +160,6 @@ class GameZone(QtGui.QWidget):
         if self.moteurJeu.nombreCoupsJoue() == self.nbCoups:
             self.labelGainEspere.setVisible(True)
             self.resultatGainEspere.setVisible(True)
+            for i in  range(0,len(self.listBout)):
+                self.listBout[i].setDisabled(True)
 

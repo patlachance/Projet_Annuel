@@ -10,6 +10,8 @@ class Moteur:
         self.nbCoupsMax = nbCoupsMax
         self.listBras = []
         self.listAlgorithme = []
+        
+        self.nbAlgorithme = 5
 
         #Initialisation de la liste listBras
         for i in range(0,nbBras):
