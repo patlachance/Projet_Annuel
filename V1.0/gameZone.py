@@ -5,11 +5,7 @@ import moteur
 
 class GameZone(QtGui.QWidget):
     
-<<<<<<< HEAD
-    def __init__(self, bras, nbCoups):
-=======
-    def __init__(self,bras,nbCoups,listAlgo):
->>>>>>> a1bd113180e6f4fe38cacea2ff2b551619cbdb91
+    def __init__(self, bras, nbCoups,listAlgo):
         super(GameZone, self).__init__()
         self.bras=bras
         self.nbCoups = nbCoups

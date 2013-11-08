@@ -11,22 +11,19 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
         
         self.centralWidget = None
-        self.initCentralWidget(10, 50)
+        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4])
         self.initMenuBar()
         self.initStatusBar()
         self.show()
         
 
-    def initCentralWidget(self, bras, nombreCoups):
+    def initCentralWidget(self, bras, nombreCoups, listAlgo):
         """Méthode d'initialisation"""
         
-<<<<<<< HEAD
-        self.centralWidget = gameZone.GameZone(bras, nombreCoups)
+        self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
 
-=======
         centralWidget = gameZone.GameZone(10, 50, [0,1,2,3])
         
->>>>>>> a1bd113180e6f4fe38cacea2ff2b551619cbdb91
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
         
