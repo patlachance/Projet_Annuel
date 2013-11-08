@@ -115,6 +115,9 @@ class GameZone(QtGui.QWidget):
                 cadreGainAlgo.addWidget(labelAlgo,i-1,0)
             if self.listAlgo[i] == 3:
                 labelAlgo = QtGui.QLabel("Gain Algo Espilon")
+                cadreGainAlgo.addWidget(labelAlgo,i-1,0)
+            if self.listAlgo[i] == 4:
+                labelAlgo = QtGui.QLabel("Gain Algo Moyenne Gain")
                 cadreGainAlgo.addWidget(labelAlgo,i-1,0)        
 
             self.listResAlgo.append(QtGui.QLabel(format(0,'.2f')))

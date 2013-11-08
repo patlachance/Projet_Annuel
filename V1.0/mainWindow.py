@@ -22,7 +22,7 @@ class MainWindow(QtGui.QMainWindow):
         
         self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
 
-        centralWidget = gameZone.GameZone(10, 50, [0,1,2,3])
+        centralWidget = gameZone.GameZone(10, 50, [0,1,2,3,4])
         
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
