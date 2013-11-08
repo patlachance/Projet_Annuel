@@ -20,13 +20,9 @@ class MainWindow(QtGui.QMainWindow):
     def initCentralWidget(self, bras, nombreCoups, listAlgo):
         """Méthode d'initialisation"""
         
-<<<<<<< HEAD
+
         self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
 
-=======
-        centralWidget = gameZone.GameZone(10, 50, [0,1,3,4])
-        
->>>>>>> 39a35f66d69126b255ffd7f885f64a7b196e5589
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
         
@@ -136,6 +132,7 @@ class MainWindow(QtGui.QMainWindow):
         # Events
         cancel.clicked.connect(configurationFrame.close)
         validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme , configurationFrame))
+        cancel.setFocusPolicy(QtCore.Qt.NoFocus)
         nombreBras.textEdited.connect(nombreBras.setText)
         nombreBras.textEdited.connect(lambda : self.checkValidityLineEdit(validate))
         nombreCoups.textEdited.connect(nombreCoups.setText)
