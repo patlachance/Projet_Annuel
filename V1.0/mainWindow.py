@@ -79,7 +79,6 @@ class MainWindow(QtGui.QMainWindow):
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
         
-        nbBras, nbCoups = self.centralWidget.bras, self.centralWidget.nbCoups
 
         configurationFrame = QtGui.QDialog(self)
         configurationFrame.setWindowTitle("Fenêtre de configuration")
@@ -123,27 +122,44 @@ class MainWindow(QtGui.QMainWindow):
         nombreBras.setText(str(self.centralWidget.bras))
         nombreCoups.setText(str(self.centralWidget.nbCoups))
 
-        if nombreBras.isModified() :
-            try :
-                nbBras = int(nombreBras.displayText())
-                print(nbBras)
-            except ValueError :
-                nombreBras.setText(str(self.centralWidget.bras))
         
-        if nombreCoups.isModified() :
-            try :
-                nbCoups = int(nombreCoups.displayText())
-            except ValueError :
-                nombreCoups.setText(str(self.centralWidget.nbCoups))
-
+        
         # Events
+        nombreCoups.textEdited.connect(lambda : print("yoooooo"))
         cancel.clicked.connect(configurationFrame.close)
-        #validate.clicked.connect(lambda : self.initCentralWidget(nbBras, nbCoups))
-
+        #validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, configurationFrame))
         configurationFrame.setLayout(gridLayout)
         configurationFrame.setFixedSize(configurationFrame.sizeHint())
         configurationFrame.show()
 
+        
+        
+    def validateConfiguration(self, nombreBras, nombreCoups, configurationFrame) :
+        """Valide la configuration envoyée"""
+        
+        nbBras, nbCoups = self.centralWidget.bras, self.centralWidget.nbCoups
+        validNbBras, validNbCoups = True, True
+         
+        
+        if nombreBras.displayText() != str(nbBras) :
+            try :
+                nbBras = int(nombreBras.displayText())
+            except ValueError :
+                validNbBras = False
+                nombreBras.setText(str(self.centralWidget.bras))
+    
+        if nombreBras.displayText() != str(nbCoups) :
+            try :
+                nbCoups = int(nombreCoups.displayText())
+            except ValueError :
+                validNbBras = False
+                nombreCoups.setText(str(self.centralWidget.nbCoups))
+         
+        if validNbBras & validNbCoups :
+            self.initCentralWidget(nbBras, nbCoups)
+            configurationFrame.close()
+        else :
+            configurationFrame.close()
 
 
 app = QtGui.QApplication(sys.argv)
