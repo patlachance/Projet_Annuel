@@ -22,8 +22,6 @@ class MainWindow(QtGui.QMainWindow):
         
         self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
 
-        centralWidget = gameZone.GameZone(10, 50, [0,1,2,3,4])
-        
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
         
@@ -99,14 +97,19 @@ class MainWindow(QtGui.QMainWindow):
         algoHasard = QtGui.QCheckBox("Hasard")
         algoGlouton = QtGui.QCheckBox("Glouton")
         algoEpsilonGlouton = QtGui.QCheckBox("Epsilon glouton")
+        algoMoyenneGain = QtGui.QCheckBox("Moyenne gain")
         validate = QtGui.QPushButton("Valider")
         cancel = QtGui.QPushButton("Annuler")
 
-        algoJoueur.setChecked(True)
-        algoHasard.setChecked(True)
-        algoGlouton.setChecked(True)
-        algoEpsilonGlouton.setChecked(True)
-
+        listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain]
+        
+        ############################
+        #       TEMPORAIRE         #
+        ############################
+        algoJoueur.setDisabled(True)
+        
+        self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.listAlgo)
+        
         algorithmeLabel.setFont(font)
 
         gridLayout.addWidget(nombreBrasLabel, 0, 0)
@@ -118,52 +121,61 @@ class MainWindow(QtGui.QMainWindow):
         gridLayout.addWidget(algoHasard, 3, 1)
         gridLayout.addWidget(algoGlouton, 4, 0)
         gridLayout.addWidget(algoEpsilonGlouton, 4, 1)
-        gridLayout.addWidget(cancel, 5, 0)
-        gridLayout.addWidget(validate, 5, 1)
+        gridLayout.addWidget(algoMoyenneGain, 5, 0)
+        gridLayout.addWidget(cancel, 6, 0)
+        gridLayout.addWidget(validate, 6, 1)
 
         nombreBras.setText(str(self.centralWidget.bras))
         nombreCoups.setText(str(self.centralWidget.nbCoups))
 
-        
-        
         # Events
-        nombreCoups.textEdited.connect(lambda : print("yoooooo"))
         cancel.clicked.connect(configurationFrame.close)
-        #validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, configurationFrame))
+        validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme , configurationFrame))
+        nombreBras.textEdited.connect(nombreBras.setText)
+        nombreBras.textEdited.connect(lambda : self.checkValidityLineEdit(validate))
+        nombreCoups.textEdited.connect(nombreCoups.setText)
+        nombreCoups.textEdited.connect(lambda : self.checkValidityLineEdit(validate))
+        
         configurationFrame.setLayout(gridLayout)
         configurationFrame.setFixedSize(configurationFrame.sizeHint())
         configurationFrame.show()
 
         
         
-    def validateConfiguration(self, nombreBras, nombreCoups, configurationFrame) :
+    def validateConfiguration(self, nombreBras, nombreCoups, listAlgorithme, configurationFrame) :
         """Valide la configuration envoyée"""
         
-        nbBras, nbCoups = self.centralWidget.bras, self.centralWidget.nbCoups
-        validNbBras, validNbCoups = True, True
-         
+        listAlgoNumber = []
         
-        if nombreBras.displayText() != str(nbBras) :
-            try :
-                nbBras = int(nombreBras.displayText())
-            except ValueError :
-                validNbBras = False
-                nombreBras.setText(str(self.centralWidget.bras))
+        for algo, i in zip(listAlgorithme, range(0, 5)):
+            if algo.isChecked() :
+                listAlgoNumber.append(i)
+                
+        self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)
+        configurationFrame.close()
+        
+    def checkValidityLineEdit(self, validButton):
+        """Verifie la validité de la valeur entrée pour une LineEdit et modifie en conséquent la cliquabilité du bouton valid"""
     
-        if nombreBras.displayText() != str(nbCoups) :
-            try :
-                nbCoups = int(nombreCoups.displayText())
-            except ValueError :
-                validNbBras = False
-                nombreCoups.setText(str(self.centralWidget.nbCoups))
-         
-        if validNbBras & validNbCoups :
-            self.initCentralWidget(nbBras, nbCoups)
-            configurationFrame.close()
-        else :
-            configurationFrame.close()
-
-
+        sender =  self.sender()
+        number = 0
+        validity = True
+        
+        try :
+            number = int(sender.displayText())
+        except ValueError :
+            validity = False
+        finally :      
+            self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
+    
+                    
+    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
+        """Coche les checkbox selon la présence ou non des algorithmes"""
+        
+        for i in  listAlgoNumber:
+            listAlgorithme[i].setChecked(True)
+            
+            
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
 
