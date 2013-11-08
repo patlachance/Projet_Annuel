@@ -20,13 +20,8 @@ class MainWindow(QtGui.QMainWindow):
     def initCentralWidget(self, bras, nombreCoups, listAlgo):
         """Méthode d'initialisation"""
         
-<<<<<<< HEAD
         self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
 
-=======
-        centralWidget = gameZone.GameZone(10, 50, [0,1,3,4])
-        
->>>>>>> 39a35f66d69126b255ffd7f885f64a7b196e5589
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
         
@@ -47,12 +42,6 @@ class MainWindow(QtGui.QMainWindow):
         self.editionMenu(menuBar)
         
 
-        # Events triggered
-        #hasard.changed.connect()
-        #glouton.changed.connect()
-
-
-        
     def initStatusBar(self):
         """Initialisation de la status bar"""
 
@@ -84,7 +73,6 @@ class MainWindow(QtGui.QMainWindow):
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
         
-
         configurationFrame = QtGui.QDialog(self)
         configurationFrame.setWindowTitle("Fenêtre de configuration")
         gridLayout = QtGui.QGridLayout()
@@ -137,9 +125,9 @@ class MainWindow(QtGui.QMainWindow):
         cancel.clicked.connect(configurationFrame.close)
         validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme , configurationFrame))
         nombreBras.textEdited.connect(nombreBras.setText)
-        nombreBras.textEdited.connect(lambda : self.checkValidityLineEdit(validate))
+        nombreBras.textEdited.connect(lambda : self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
         nombreCoups.textEdited.connect(nombreCoups.setText)
-        nombreCoups.textEdited.connect(lambda : self.checkValidityLineEdit(validate))
+        nombreCoups.textEdited.connect(lambda : self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
         
         configurationFrame.setLayout(gridLayout)
         configurationFrame.setFixedSize(configurationFrame.sizeHint())
@@ -159,18 +147,22 @@ class MainWindow(QtGui.QMainWindow):
         self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)
         configurationFrame.close()
         
-    def checkValidityLineEdit(self, validButton):
+    def checkValidityLineEdit(self, nombreBrasLineEdit, nombreCoupsLineEdit, validButton):
         """Verifie la validité de la valeur entrée pour une LineEdit et modifie en conséquent la cliquabilité du bouton valid"""
     
-        sender =  self.sender()
-        number = 0
+        numberArm = 0
+        numberBlow = 0
         validity = True
         
         try :
-            number = int(sender.displayText())
+            numberArm = int(nombreBrasLineEdit.displayText())
+            numberBlow = int(nombreCoupsLineEdit.displayText())
         except ValueError :
             validity = False
-        finally :      
+        finally :
+            if numberArm < 0 or numberBlow < 0 :
+                validity = False
+                      
             self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
     
                     
