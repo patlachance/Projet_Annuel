@@ -124,6 +124,7 @@ class MainWindow(QtGui.QMainWindow):
         # Events
         cancel.clicked.connect(configurationFrame.close)
         validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme , configurationFrame))
+        cancel.setFocusPolicy(QtCore.Qt.NoFocus)
         nombreBras.textEdited.connect(nombreBras.setText)
         nombreBras.textEdited.connect(lambda : self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
         nombreCoups.textEdited.connect(nombreCoups.setText)
