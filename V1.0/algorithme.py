@@ -37,10 +37,17 @@ class Algorithme:
         """ Cette fonction retourn l'espérance véritable."""
         return self.listBras[numeroBras].nbFoisActionne       
         
+
+    def redefinirBras(self, listBras):
+        """Cette fonction redéfinit le gain et la proba de chaque bras"""
+        for i in range(0, len(listBras) -1):
+            self.listBras[i].definir(listBras[i].gain, listBras[i].proba)
+
     
     def lancerAlgo(self):
         """Cette fonction est appelée pour lancer l'algorithme, et actionner le bras ensuite."""
        
+
         if self.numAlgo == -1:
             res = self.algoGainEspere()
         if self.numAlgo == 1:
@@ -172,7 +179,4 @@ class Algorithme:
 
         return meilleurBras
         
-
-
-
 

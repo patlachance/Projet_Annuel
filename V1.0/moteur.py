@@ -45,6 +45,7 @@ class Moteur:
     # Cette fonction actionne le bras demandé du joueur.
     def actionnerBrasJoueur(self, numeroBras):
         self.listAlgorithme[0].actionnerBras(numeroBras)
+        self.changerBras()
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
     def lancerAlgo(self):
@@ -58,6 +59,12 @@ class Moteur:
         algoGainEspere.lancerAlgoEntierement()
         return algoGainEspere.gain
 
+    # Cette fonction change la proba de gain et le gain de chaque bras. 
+    def changerBras(self):
+        for i in range(0,self.nbBras):
+            self.listBras[i].reinitialiser()
 
-    def coupAlgorithme(self, numAlgo):
-        """ Cette fonction retourne le bras choisi par l'algorithme précisé."""
+        # Je redéfinis les bras de chaque algorithme.
+        for i in range(0,self.nbAlgorithme):
+            self.listAlgorithme[i].redefinirBras(self.listBras)
+        
