@@ -1,5 +1,7 @@
 import random
 import copy
+from math import sqrt, log 
+
 class Algorithme:
     """Classe mère des algorithmes."""
 
@@ -31,6 +33,9 @@ class Algorithme:
         """ Cette fonction retourn l'espérance véritable."""
         return self.listBras[numeroBras].esperanceVeritable()        
 
+    def nbFoisActionne(self, numeroBras):
+        """ Cette fonction retourn l'espérance véritable."""
+        return self.listBras[numeroBras].nbFoisActionne       
         
     
     def lancerAlgo(self):
@@ -46,6 +51,9 @@ class Algorithme:
             res = self.algoGloutonEpsilon()
         if self.numAlgo == 4:
             res = self.algoMoyenneGain()
+        if self.numAlgo == 5:
+            res = self.algoUCB()
+
 
         self.actionnerBras(res)
 
@@ -116,6 +124,8 @@ class Algorithme:
 
 
     def algoMoyenneGain(self):
+        """ Algorithme choisissant un bras au prorata de sa moyenne """
+ 
         jeuApprentissage = 0.5 # 50% du nombre de coups max sera utilisé pour connaitre le meilleur bras.  
         if self.nbCoupsJoue < jeuApprentissage*self.nbCoupsMax :
             res = self.nbCoupsJoue % len(self.listBras)
@@ -139,5 +149,30 @@ class Algorithme:
                     i += 1
 
         return res
+
+
+    def algoUCB(self):
+        """ Algorithme utilisant l'UCB1. Cet algorithme choisit le bras ayant la meilleure (moyenne + variable) la variable diminuant si le nombre de fois que l'on actionne le bras augmente."""
+
+        meilleurBras=-1
+        gain = -1        
+
+        # Au début, on actionne une fois chaque bras.
+        if self.nbCoupsJoue < len(self.listBras):
+            return self.nbCoupsJoue
+        
+
+        for k in range(0,len(self.listBras)):
+
+            gainTmp = self.esperanceCalculee(k) + sqrt( 2 * log(self.nbCoupsJoue) / self.nbFoisActionne(k))
+
+            if gainTmp >= gain:
+                gain = gainTmp
+                meilleurBras = k
+
+        return meilleurBras
+        
+
+
 
 

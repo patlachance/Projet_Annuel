@@ -11,7 +11,7 @@ class Moteur:
         self.listBras = []
         self.listAlgorithme = []
         
-        self.nbAlgorithme = 5
+        self.nbAlgorithme = 6
 
         #Initialisation de la liste listBras
         for i in range(0,nbBras):
