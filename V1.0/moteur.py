@@ -45,7 +45,6 @@ class Moteur:
     # Cette fonction actionne le bras demandé du joueur.
     def actionnerBrasJoueur(self, numeroBras):
         self.listAlgorithme[0].actionnerBras(numeroBras)
-        self.changerBras()
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
     def lancerAlgo(self):
