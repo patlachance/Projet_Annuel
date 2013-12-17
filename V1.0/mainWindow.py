@@ -14,7 +14,7 @@ class MainWindow(QtGui.QMainWindow):
         self.initCentralWidget(10, 50, [0, 1, 2, 3, 4])
         self.initMenuBar()
         self.initStatusBar()
-        self.show()
+        self.showMaximized()
         
 
     def initCentralWidget(self, bras, nombreCoups, listAlgo):
@@ -161,7 +161,7 @@ class MainWindow(QtGui.QMainWindow):
         except ValueError :
             validity = False
         finally :
-            if numberArm < 0 or numberBlow < 0 :
+            if numberArm < 1 or numberBlow < 1 :
                 validity = False
                       
             self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
