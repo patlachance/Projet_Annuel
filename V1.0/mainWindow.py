@@ -91,10 +91,11 @@ class MainWindow(QtGui.QMainWindow):
         algoGlouton = QtGui.QCheckBox("Glouton")
         algoEpsilonGlouton = QtGui.QCheckBox("Epsilon glouton")
         algoMoyenneGain = QtGui.QCheckBox("Moyenne gain")
+        algoUCB = QtGui.QCheckBox("UCB1")
         validate = QtGui.QPushButton("Valider")
         cancel = QtGui.QPushButton("Annuler")
 
-        listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain]
+        listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain,algoUCB]
         
         ############################
         #       TEMPORAIRE         #
@@ -115,6 +116,7 @@ class MainWindow(QtGui.QMainWindow):
         gridLayout.addWidget(algoGlouton, 4, 0)
         gridLayout.addWidget(algoEpsilonGlouton, 4, 1)
         gridLayout.addWidget(algoMoyenneGain, 5, 0)
+        gridLayout.addWidget(algoUCB, 5, 1)
         gridLayout.addWidget(cancel, 6, 0)
         gridLayout.addWidget(validate, 6, 1)
 
