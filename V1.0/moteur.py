@@ -11,7 +11,7 @@ class Moteur:
         self.listBras = []
         self.listAlgorithme = []
         
-        self.nbAlgorithme = 5
+        self.nbAlgorithme = 6
 
         #Initialisation de la liste listBras
         for i in range(0,nbBras):
@@ -58,6 +58,12 @@ class Moteur:
         algoGainEspere.lancerAlgoEntierement()
         return algoGainEspere.gain
 
+    # Cette fonction change la proba de gain et le gain de chaque bras. 
+    def changerBras(self):
+        for i in range(0,self.nbBras):
+            self.listBras[i].reinitialiser()
 
-    def coupAlgorithme(self, numAlgo):
-        """ Cette fonction retourne le bras choisi par l'algorithme précisé."""
+        # Je redéfinis les bras de chaque algorithme.
+        for i in range(0,self.nbAlgorithme):
+            self.listAlgorithme[i].redefinirBras(self.listBras)
+        

@@ -11,7 +11,7 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
         
         self.centralWidget = None
-        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4])
+        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4, 5])
         self.initMenuBar()
         self.initStatusBar()
         self.showMaximized()
