@@ -5,14 +5,16 @@ from math import sqrt, log
 class Algorithme:
     """Classe mère des algorithmes."""
 
-    def __init__(self, nbCoupsMax, listBras, numAlgo):
+    def __init__(self, nbCoupsMax, listBras, periode, numAlgo):
         self.gain=0
         self.nbCoupsJoue=0
         self.nbCoupsMax = nbCoupsMax
-        
+        self.periode = periode
         self.listBras = copy.deepcopy(listBras)
 
         self.numAlgo = numAlgo
+
+        self.historique = []
                   
     def actionnerBras(self, numeroBras):
         """ Cette fonction actionne le bras demandé. Sauf dans le cas du gain espéré où le gain est ajouté directement."""
@@ -20,21 +22,38 @@ class Algorithme:
         
         # Le gain est calculé différemment si il s'agit de l'algo utilisé pour connaître le gain espéré. En effet, nous voulons alors connaître la VERITABLE ESPERANCE.
         if (self.numAlgo == -1):
-            self.gain += self.esperanceVeritable(numeroBras)
+            gain = self.esperanceVeritable(numeroBras)
         else:        
-            self.gain += self.listBras[numeroBras].actionner()
+            gain = self.listBras[numeroBras].actionner()
           
+        # diminuer les gains selon l'historique (si période > 0)
+        if self.periode > 0 :     
+            debutParcours = len(self.historique) - self.periode
+            if debutParcours < 0:
+                debutParcours = 0
+            nbFoisBrasActionne = 0
+            for i in range(debutParcours, len(self.historique)):
+                if self.historique[i] == numeroBras:
+                    nbFoisBrasActionne += 1
+            gain *= (self.periode-nbFoisBrasActionne)/self.periode
+
+        self.gain += gain
+        self.listBras[numeroBras].recupererVeritableGain(gain)
+
+
+        # Ajouter le coup à l'historique
+        self.historique.append(numeroBras)
 
     def esperanceCalculee(self, numeroBras):
         """ Cette fonction retourne l'espérance calculée."""
         return self.listBras[numeroBras].esperanceCalculee()        
 
     def esperanceVeritable(self, numeroBras):
-        """ Cette fonction retourn l'espérance véritable."""
+        """ Cette fonction retournr l'espérance véritable."""
         return self.listBras[numeroBras].esperanceVeritable()        
 
     def nbFoisActionne(self, numeroBras):
-        """ Cette fonction retourn l'espérance véritable."""
+        """ Cette fonction retournr l'espérance véritable."""
         return self.listBras[numeroBras].nbFoisActionne       
         
 

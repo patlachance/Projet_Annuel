@@ -7,7 +7,6 @@ class Bras:
         # proba et gain definis entre 0 et 1.
         self.proba = random.random()
         self.gain = random.random()
-
         # variable indiquant la somme gagnée à l'aide de ce bras
         self.gainObtenu = 0
 
@@ -21,11 +20,15 @@ class Bras:
 
         # Si on gagne
         if (tmp <= self.proba):
-            self.gainObtenu += self.gain
             return self.gain
         #sinon
         else:
             return 0
+       
+
+    # récupère le véritable gain (après calcul de l'historique)
+    def recupererVeritableGain(self, gain):
+        self.gainObtenu += gain 
 
     # retourne l'espérance. Nécessaire pour les algorithmes.
     def esperanceCalculee(self):

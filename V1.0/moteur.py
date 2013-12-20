@@ -10,7 +10,7 @@ class Moteur:
         self.nbCoupsMax = nbCoupsMax
         self.listBras = []
         self.listAlgorithme = []
-        
+        self.periode = 4 #par exemple.
         self.nbAlgorithme = 6
 
         #Initialisation de la liste listBras
@@ -20,7 +20,7 @@ class Moteur:
         #initialisation des algorithmes.
 
         for i in range(0,len(listAlgo)):
-            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, listAlgo[i]))
+            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, self.periode, listAlgo[i]))
         
 
     # Cette fonction retourne l'espérance du bras demandé pour le joueur.
@@ -34,7 +34,7 @@ class Moteur:
 
     # Cette fonction retourne le nombre de fois que le joueur a joué
     def nombreCoupsJoue(self):
-        """Retourne le nombre de fois que le bras a été actionné"""
+        """Cette fonction retourne le nombre de fois que le joueur a joué"""
         return self.listAlgorithme[0].nbCoupsJoue
 
 
@@ -53,7 +53,7 @@ class Moteur:
 
     # Cette fonction retourne le gain esperé.
     def gainEspere(self):        
-        algoGainEspere = algorithme.Algorithme(self.nbCoupsMax, self.listBras, -1)
+        algoGainEspere = algorithme.Algorithme(self.nbCoupsMax, self.listBras, self.periode, -1)
         
         algoGainEspere.lancerAlgoEntierement()
         return algoGainEspere.gain
