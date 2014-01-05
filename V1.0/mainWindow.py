@@ -18,10 +18,19 @@ class MainWindow(QtGui.QMainWindow):
         #self.showMaximized()
         self.show()
 
-    def initCentralWidget(self, bras, nombreCoups, listAlgo):
+    def initCentralWidget(self, *args):
         """Méthode d'initialisation"""
-        
-        self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
+
+        #args[0] = nbBras
+        #args[1] = nbCoups
+        #args[2] = listAlgorithme
+        #args[3] = listBras
+
+        if len(args) == 4:
+            self.centralWidget = gameZone.GameZone(args[0], args[1], args[2], args[3])
+        else:
+            self.centralWidget = gameZone.GameZone(args[0], args[1], args[2])
+
 
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
@@ -79,7 +88,7 @@ class MainWindow(QtGui.QMainWindow):
         pathFilePicked = QtGui.QFileDialog.getOpenFileName(filter="*.sc")
         scenar = scenario.Scenario(pathFilePicked)
         configurationScenario = scenar.loadScenario()
-        self.initCentralWidget(scenar.configuration[0], scenar.configuration[1], scenar.configuration[2])
+        self.initCentralWidget(scenar.configuration[0], scenar.configuration[1], scenar.configuration[2], scenar.listes_bras[0])
 
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
@@ -155,7 +164,7 @@ class MainWindow(QtGui.QMainWindow):
         listAlgoNumber = []
 
         for algo, i in zip(listAlgorithme, range(0, 5)):
-            if algo.isChecked() :
+            if algo.isChecked():
                 listAlgoNumber.append(i)
 
         self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)

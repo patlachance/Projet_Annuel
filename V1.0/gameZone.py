@@ -174,8 +174,6 @@ class GameZone(QtGui.QWidget):
         
         self.setLayout(principal)
         
-        self.setWindowTitle('Jeu du manchot') 
-        self.show()
 
     def buttonClicked(self):
       
