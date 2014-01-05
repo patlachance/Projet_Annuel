@@ -41,6 +41,7 @@ class GameZone(QtGui.QWidget):
 
         self.resultatGain = QtGui.QLabel(format(0, '.2f'))
         self.resultatGain.setFont(font)
+
         cadreGain.addWidget(self.resultatGain, 1, 1)
 
         self.labelGainEspere = QtGui.QLabel("Gain espéré")
@@ -56,6 +57,22 @@ class GameZone(QtGui.QWidget):
 
         self.resultatNbCoupsJoue = QtGui.QLabel("0")
         cadreGain.addWidget(self.resultatNbCoupsJoue, 3, 1)
+
+        cadreGain.addWidget(self.resultatGain,1,1)
+
+        self.labelGainEspere = QtGui.QLabel("Gain espéré")
+        cadreGain.addWidget(self.labelGainEspere,2,0)
+        self.labelGainEspere.setVisible(False)
+
+        self.resultatGainEspere = QtGui.QLabel(format(float(self.moteurJeu.gainEspere()),'.2f'))
+        cadreGain.addWidget(self.resultatGainEspere,2,1)
+        self.resultatGainEspere.setVisible(False)
+        
+        labelNbCoupsJoue = QtGui.QLabel("Nombre de coups")
+        cadreGain.addWidget(labelNbCoupsJoue,3,0)
+
+        self.resultatNbCoupsJoue = QtGui.QLabel("0")
+        cadreGain.addWidget(self.resultatNbCoupsJoue,3,1)
 
 
 
@@ -81,6 +98,26 @@ class GameZone(QtGui.QWidget):
         labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
         labelNombreCoupsBras.setStyleSheet("border: 0px;")
         cadreJoueur.addWidget(labelNombreCoupsBras, 5, 0, 1, self.moteurJeu.nbBras)
+
+        cadreJoueur.setRowStretch(0,1)
+        cadreJoueur.setColumnStretch(6,1)
+
+        self.listBout = []
+
+        for i in range(0,self.bras):
+            self.listBout.append(QtGui.QPushButton(str(i+1)))
+            self.listBout[i].setIcon(icon)
+            self.listBout[i].setIconSize(QtCore.QSize(50,50))
+            self.listBout[i].clicked.connect(self.buttonClicked)
+            cadreJoueur.addWidget(self.listBout[i],1,i)
+               
+        labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
+        labelGainMoyenBras.setStyleSheet("border: 0px;")
+        cadreJoueur.addWidget(labelGainMoyenBras,2,0,1,self.bras)
+
+        labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
+        labelNombreCoupsBras.setStyleSheet("border: 0px;")
+        cadreJoueur.addWidget(labelNombreCoupsBras,5,0,1,self.bras)
         
         self.moyenneBras = []
         self.nombreFoisJoueBras = []
@@ -88,6 +125,7 @@ class GameZone(QtGui.QWidget):
         for i in range(0, self.moteurJeu.nbBras):
             self.moyenneBras.append(QtGui.QLabel(format(0, '.2f')))
             self.moyenneBras[i].setAlignment(QtCore.Qt.AlignCenter)
+
             cadreJoueur.addWidget(self.moyenneBras[i], 3, i)
             
             self.nombreFoisJoueBras.append(QtGui.QLabel("0"))
@@ -110,11 +148,11 @@ class GameZone(QtGui.QWidget):
 
 
         cadreGainAlgo = QtGui.QGridLayout()
-        cadreGainAlgo.setColumnStretch(3, 1)
+        cadreGainAlgo.setColumnStretch(3,1)
 
         self.listResAlgo = []
         
-        for i in range(1, len(self.listAlgo)):
+        for i in  range(1,len(self.listAlgo)):
 
             if self.listAlgo[i] == 1:
                 labelAlgo = QtGui.QLabel("Gain Algo hasard")
@@ -128,9 +166,12 @@ class GameZone(QtGui.QWidget):
             if self.listAlgo[i] == 4:
                 labelAlgo = QtGui.QLabel("Gain Algo Moyenne Gain")
                 cadreGainAlgo.addWidget(labelAlgo, i-1, 0)
+            if self.listAlgo[i] == 5:
+                labelAlgo = QtGui.QLabel("Gain Algo UCB")
+                cadreGainAlgo.addWidget(labelAlgo, i-1, 0)     
 
-            self.listResAlgo.append(QtGui.QLabel(format(0, '.2f')))
-            cadreGainAlgo.addWidget(self.listResAlgo[i-1], i-1,1)
+            self.listResAlgo.append(QtGui.QLabel(format(0,'.2f')))
+            cadreGainAlgo.addWidget(self.listResAlgo[i-1], i-1, 1)
 
         algo = QtGui.QHBoxLayout()
         algo.addLayout(cadreGainAlgo)
@@ -148,7 +189,9 @@ class GameZone(QtGui.QWidget):
         principal.addStretch(1)
         
         self.setLayout(principal)
-
+        
+        self.setWindowTitle('Jeu du manchot') 
+        self.show()
 
     def buttonClicked(self):
       
@@ -159,7 +202,15 @@ class GameZone(QtGui.QWidget):
         self.moyenneBras[num].setText(str(format(self.moteurJeu.esperanceJoueur(num),'.2f')))
         self.nombreFoisJoueBras[num].setText(str(self.moteurJeu.nombreFoisJoueBrasJoueur(num)))
         self.resultatGain.setText(str(format(self.moteurJeu.gain(0), '.2f')))
-        self.resultatNbCoupsJoue.setText(str(self.moteurJeu.nombreCoupsJoue()))
+        
+self.resultatNbCoupsJoue.setText(str(self.moteurJeu.nombreCoupsJoue()))
+        for i in  range(1,len(self.listAlgo)):
+            self.listResAlgo[i-1].setText(str(format(self.moteurJeu.gain(i),'.2f')))
+        if self.moteurJeu.nombreCoupsJoue() == self.nbCoups:
+            self.labelGainEspere.setVisible(True)
+            self.resultatGainEspere.setVisible(True)
+            for i in  range(0,len(self.listBout)):
+                self.listBout[i].setDisabled(True)
 
         for i in range(1, len(self.moteurJeu.listAlgorithme)):
             self.listResAlgo[i-1].setText(str(format(self.moteurJeu.gain(i), '.2f')))

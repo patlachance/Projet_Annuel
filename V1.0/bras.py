@@ -44,3 +44,15 @@ class Bras:
     def esperanceVeritable(self):
         return self.proba * self.gain
 
+    # réinitialise le gain et la proba de gain du bras
+    def reinitialiser(self):
+        # proba et gain definis entre 0 et 1.
+        self.proba = random.random()
+        self.gain = random.random()
+
+    # Redéfinit le bras.
+    def definir(self, g, p):
+        self.gain = g
+        self.proba = p
+
+

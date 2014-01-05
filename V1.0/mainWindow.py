@@ -12,6 +12,7 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
 
         self.centralWidget = None
+<<<<<<< HEAD
         self.initCentralWidget(10, 50, [0, 1, 2, 3, 4])
         self.initMenuBar()
         self.initStatusBar()
@@ -21,6 +22,17 @@ class MainWindow(QtGui.QMainWindow):
     def initCentralWidget(self, bras, nombreCoups, listAlgo):
         """Méthode d'initialisation"""
 
+=======
+        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4, 5])
+        self.initMenuBar()
+        self.initStatusBar()
+        self.showMaximized()
+        
+
+    def initCentralWidget(self, bras, nombreCoups, listAlgo):
+        """Méthode d'initialisation"""
+        
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
         self.centralWidget = gameZone.GameZone(bras, nombreCoups, listAlgo)
 
         # Recuperation du centre de l'écran de l'utilisateur
@@ -42,7 +54,10 @@ class MainWindow(QtGui.QMainWindow):
         self.fileMenu(menuBar)
         self.editionMenu(menuBar)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
     def initStatusBar(self):
         """Initialisation de la status bar"""
 
@@ -83,7 +98,11 @@ class MainWindow(QtGui.QMainWindow):
 
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
         configurationFrame = QtGui.QDialog(self)
         configurationFrame.setWindowTitle("Fenêtre de configuration")
         gridLayout = QtGui.QGridLayout()
@@ -102,18 +121,33 @@ class MainWindow(QtGui.QMainWindow):
         algoGlouton = QtGui.QCheckBox("Glouton")
         algoEpsilonGlouton = QtGui.QCheckBox("Epsilon glouton")
         algoMoyenneGain = QtGui.QCheckBox("Moyenne gain")
+<<<<<<< HEAD
         validate = QtGui.QPushButton("Valider")
         cancel = QtGui.QPushButton("Annuler")
 
         listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain]
 
+=======
+        algoUCB = QtGui.QCheckBox("UCB1")
+        validate = QtGui.QPushButton("Valider")
+        cancel = QtGui.QPushButton("Annuler")
+
+        listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain,algoUCB]
+        
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
         ############################
         #       TEMPORAIRE         #
         ############################
         algoJoueur.setDisabled(True)
+<<<<<<< HEAD
 
         self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.listAlgo)
 
+=======
+        
+        self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.listAlgo)
+        
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
         algorithmeLabel.setFont(font)
 
         gridLayout.addWidget(nombreBrasLabel, 0, 0)
@@ -126,6 +160,7 @@ class MainWindow(QtGui.QMainWindow):
         gridLayout.addWidget(algoGlouton, 4, 0)
         gridLayout.addWidget(algoEpsilonGlouton, 4, 1)
         gridLayout.addWidget(algoMoyenneGain, 5, 0)
+<<<<<<< HEAD
         gridLayout.addWidget(cancel, 6, 0)
         gridLayout.addWidget(validate, 6, 1)
 
@@ -140,10 +175,29 @@ class MainWindow(QtGui.QMainWindow):
         nombreCoups.textEdited.connect(nombreCoups.setText)
         nombreCoups.textEdited.connect(lambda: self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
 
+=======
+        gridLayout.addWidget(algoUCB, 5, 1)
+        gridLayout.addWidget(cancel, 6, 0)
+        gridLayout.addWidget(validate, 6, 1)
+
+        nombreBras.setText(str(self.centralWidget.bras))
+        nombreCoups.setText(str(self.centralWidget.nbCoups))
+
+        # Events
+        cancel.clicked.connect(configurationFrame.close)
+        validate.clicked.connect(lambda : self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme , configurationFrame))
+        cancel.setFocusPolicy(QtCore.Qt.NoFocus)
+        nombreBras.textEdited.connect(nombreBras.setText)
+        nombreBras.textEdited.connect(lambda : self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
+        nombreCoups.textEdited.connect(nombreCoups.setText)
+        nombreCoups.textEdited.connect(lambda : self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
+        
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
         configurationFrame.setLayout(gridLayout)
         configurationFrame.setFixedSize(configurationFrame.sizeHint())
         configurationFrame.show()
 
+<<<<<<< HEAD
 
     def validateConfiguration(self, nombreBras, nombreCoups, listAlgorithme, configurationFrame):
         """Valide la configuration envoyée"""
@@ -184,6 +238,48 @@ class MainWindow(QtGui.QMainWindow):
             listAlgorithme[i].setChecked(True)
 
 
+=======
+        
+        
+    def validateConfiguration(self, nombreBras, nombreCoups, listAlgorithme, configurationFrame) :
+        """Valide la configuration envoyée"""
+        
+        listAlgoNumber = []
+        
+        for algo, i in zip(listAlgorithme, range(0, 5)):
+            if algo.isChecked() :
+                listAlgoNumber.append(i)
+                
+        self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)
+        configurationFrame.close()
+        
+    def checkValidityLineEdit(self, nombreBrasLineEdit, nombreCoupsLineEdit, validButton):
+        """Verifie la validité de la valeur entrée pour une LineEdit et modifie en conséquent la cliquabilité du bouton valid"""
+    
+        numberArm = 0
+        numberBlow = 0
+        validity = True
+        
+        try :
+            numberArm = int(nombreBrasLineEdit.displayText())
+            numberBlow = int(nombreCoupsLineEdit.displayText())
+        except ValueError :
+            validity = False
+        finally :
+            if numberArm < 1 or numberBlow < 1 :
+                validity = False
+                      
+            self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
+    
+                    
+    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
+        """Coche les checkbox selon la présence ou non des algorithmes"""
+        
+        for i in  listAlgoNumber:
+            listAlgorithme[i].setChecked(True)
+            
+            
+>>>>>>> 976435d02d89e5dd49bef02fb0f938fc6716576a
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
 
