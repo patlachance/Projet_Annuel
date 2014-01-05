@@ -31,9 +31,7 @@ class Moteur:
         for i in args[2]:
             self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, i))
 
-        for i in range(0,len(listAlgo)):
-            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, listAlgo[i]))
-        
+
 
     # Cette fonction retourne l'espérance du bras demandé pour le joueur.
     def esperanceJoueur(self, num):

@@ -58,22 +58,6 @@ class GameZone(QtGui.QWidget):
         self.resultatNbCoupsJoue = QtGui.QLabel("0")
         cadreGain.addWidget(self.resultatNbCoupsJoue, 3, 1)
 
-        cadreGain.addWidget(self.resultatGain,1,1)
-
-        self.labelGainEspere = QtGui.QLabel("Gain espéré")
-        cadreGain.addWidget(self.labelGainEspere,2,0)
-        self.labelGainEspere.setVisible(False)
-
-        self.resultatGainEspere = QtGui.QLabel(format(float(self.moteurJeu.gainEspere()),'.2f'))
-        cadreGain.addWidget(self.resultatGainEspere,2,1)
-        self.resultatGainEspere.setVisible(False)
-        
-        labelNbCoupsJoue = QtGui.QLabel("Nombre de coups")
-        cadreGain.addWidget(labelNbCoupsJoue,3,0)
-
-        self.resultatNbCoupsJoue = QtGui.QLabel("0")
-        cadreGain.addWidget(self.resultatNbCoupsJoue,3,1)
-
 
 
         cadreJoueur = QtGui.QGridLayout()
@@ -104,20 +88,20 @@ class GameZone(QtGui.QWidget):
 
         self.listBout = []
 
-        for i in range(0,self.bras):
+        for i in range(0, self.moteurJeu.nbBras):
             self.listBout.append(QtGui.QPushButton(str(i+1)))
             self.listBout[i].setIcon(icon)
             self.listBout[i].setIconSize(QtCore.QSize(50,50))
             self.listBout[i].clicked.connect(self.buttonClicked)
-            cadreJoueur.addWidget(self.listBout[i],1,i)
+            cadreJoueur.addWidget(self.listBout[i], 1, i)
                
         labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
         labelGainMoyenBras.setStyleSheet("border: 0px;")
-        cadreJoueur.addWidget(labelGainMoyenBras,2,0,1,self.bras)
+        cadreJoueur.addWidget(labelGainMoyenBras, 2, 0, 1, self.moteurJeu.nbBras)
 
         labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
         labelNombreCoupsBras.setStyleSheet("border: 0px;")
-        cadreJoueur.addWidget(labelNombreCoupsBras,5,0,1,self.bras)
+        cadreJoueur.addWidget(labelNombreCoupsBras, 5, 0, 1, self.moteurJeu.nbBras)
         
         self.moyenneBras = []
         self.nombreFoisJoueBras = []
@@ -203,19 +187,13 @@ class GameZone(QtGui.QWidget):
         self.nombreFoisJoueBras[num].setText(str(self.moteurJeu.nombreFoisJoueBrasJoueur(num)))
         self.resultatGain.setText(str(format(self.moteurJeu.gain(0), '.2f')))
         
-self.resultatNbCoupsJoue.setText(str(self.moteurJeu.nombreCoupsJoue()))
-        for i in  range(1,len(self.listAlgo)):
-            self.listResAlgo[i-1].setText(str(format(self.moteurJeu.gain(i),'.2f')))
-        if self.moteurJeu.nombreCoupsJoue() == self.nbCoups:
-            self.labelGainEspere.setVisible(True)
-            self.resultatGainEspere.setVisible(True)
-            for i in  range(0,len(self.listBout)):
-                self.listBout[i].setDisabled(True)
+        self.resultatNbCoupsJoue.setText(str(self.moteurJeu.nombreCoupsJoue()))
 
         for i in range(1, len(self.moteurJeu.listAlgorithme)):
             self.listResAlgo[i-1].setText(str(format(self.moteurJeu.gain(i), '.2f')))
+
         if self.moteurJeu.nombreCoupsJoue() == self.moteurJeu.nbCoupsMax:
             self.labelGainEspere.setVisible(True)
             self.resultatGainEspere.setVisible(True)
-            for i in range(0,len(self.listBout)):
+            for i in range(0, len(self.listBout)):
                 self.listBout[i].setDisabled(True)

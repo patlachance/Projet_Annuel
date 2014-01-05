@@ -32,7 +32,6 @@ class Scenario:
             if i not in [' ', ',', '[', ']']:
                 list_algorithme.append(int(i))
 
-        print(list_algorithme)
         self.configuration.append(list_algorithme)
 
 
