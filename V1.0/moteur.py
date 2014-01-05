@@ -1,28 +1,36 @@
+import copy
 import bras
 import algorithme
+
 
 class Moteur:
     """Représente le moteur"""
 
-    def __init__(self, nbBras, nbCoupsMax):
+    def __init__(self, *args):
 
-        self.nbBras = nbBras
-        self.nbCoupsMax = nbCoupsMax
+        #args[0] = nbBras
+        #args[1] = nbCoups
+        #args[2] = listAlgorithme
+        #args[3] = listBras
+
+        self.nbBras = args[0]
+        self.nbCoupsMax = args[1]
         self.listBras = []
         self.listAlgorithme = []
+        
+        self.nbAlgorithme = 5
 
-        #Initialisation de la liste listBras
-        for i in range(0,nbBras):
-            self.listBras.append(bras.Bras())	
+        if len(args) == 4:
+            self.listBras = copy.deepcopy(args[3])
+        else:
+            #Initialisation de la liste listBras
+            for i in range(0, self.nbBras):
+                self.listBras.append(bras.Bras())
 
         #initialisation des algorithmes.
+        for i in args[2]:
+            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, i))
 
-        algoJoueur = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 0)
-        self.listAlgorithme.append(algoJoueur) # joueur
-
-        algoHasard = algorithme.Algorithme(self.nbCoupsMax, self.listBras, 2)
-        self.listAlgorithme.append(algoHasard) # algo
-        
 
     # Cette fonction retourne l'espérance du bras demandé pour le joueur.
     def esperanceJoueur(self, num):
@@ -49,7 +57,7 @@ class Moteur:
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
     def lancerAlgo(self):
-         for i in range(1,len(self.listAlgorithme)):
+         for i in range(1, len(self.listAlgorithme)):
               self.listAlgorithme[i].lancerAlgo()
 
     # Cette fonction retourne le gain esperé.
