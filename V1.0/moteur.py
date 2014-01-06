@@ -15,22 +15,12 @@ class Moteur:
 
         self.nbBras = args[0]
         self.nbCoupsMax = args[1]
-        self.changement = []
         self.listBras = []
         self.listAlgorithme = []
-        
         self.nbAlgorithme = 6
 
         if len(args) == 4:
-            for i in args[3]:
-                nombre_iteration = 0
-                if len(self.changement) != 0:
-                    nombre_iteration = self.changement[len(self.changement) - 1][0]
-
-                nombre_iteration += i.pop(0)
-                self.changement.append((nombre_iteration, i))
-
-            self.listBras = self.changement[0][1]
+            self.listBras = self.args[3]
         else:
             #Initialisation de la liste listBras
             for i in range(0, self.nbBras):
@@ -67,22 +57,21 @@ class Moteur:
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
     def lancerAlgo(self):
-        if len(self.changement) != 0:
-            if self.nombreCoupsJoue() == self.changement[0][0]:
-                print()
-                #appeler la fonction qui redefinie la valeur de chaque bras 
+
+        #appeler la fonction qui redefinie la valeur de chaque bras
         for i in range(1, len(self.listAlgorithme)):
               self.listAlgorithme[i].lancerAlgo()
 
     # Cette fonction retourne le gain esperé.
-    def gainEspere(self):        
+    def gainEspere(self):
+
         algoGainEspere = algorithme.Algorithme(self.nbCoupsMax, self.listBras, -1)
-        
         algoGainEspere.lancerAlgoEntierement()
         return algoGainEspere.gain
 
     # Cette fonction change la proba de gain et le gain de chaque bras. 
-    def changerBras(self, nombre_coups_joue):
+    def changerListeBras(self):
+
         for i in range(0, self.nbBras):
             self.listBras[i].reinitialiser()
 

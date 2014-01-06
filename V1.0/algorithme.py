@@ -40,12 +40,12 @@ class Algorithme:
 
     def redefinirBras(self, listBras):
         """Cette fonction redéfinit le gain et la proba de chaque bras"""
-        for i in range(0, len(listBras) -1):
+
+        for i in range(0, len(listBras)):
             self.listBras[i].definir(listBras[i].gain, listBras[i].proba)
 
     def lancerAlgo(self):
         """Cette fonction est appelée pour lancer l'algorithme, et actionner le bras ensuite."""
-       
 
         if self.numAlgo == -1:
             res = self.algoGainEspere()
@@ -111,7 +111,7 @@ class Algorithme:
         """ Algorithme essayant dans un premier temps tous les bras, puis choisit le meilleur en essayant un autre bras au hasard de temps en temps"""
         jeuApprentissage = 0.5 # 50% du nombre de coups max sera utilisé pour connaitre le meilleur bras.  
         epsilon = 0.1 # une fois sur 10, l'algorithme jouera un coup au hasard.
-        if self.nbCoupsJoue < jeuApprentissage*self.nbCoupsMax :
+        if self.nbCoupsJoue < jeuApprentissage*self.nbCoupsMax:
             res = self.nbCoupsJoue % len(self.listBras)
         else:
             numeroMeilleurBras=-1

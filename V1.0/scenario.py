@@ -6,8 +6,20 @@ class Scenario:
 
     def __init__(self, pathFile):
 
+        #Un scenario est decrit :
+        #1: nombre de bras
+        #2: nombre de coups
+        #3: liste algorithme
+        #4: configuration (0:classique, 1:dynamique, 2:diminution)
+            #si classique liste bras
+            #si dynamique palier de permutation + liste bras
+            #si diminution intervalle + liste bras
+        #5: si # bras generes aléatoirement sinon listes de bras
         self.pathFile = pathFile
-        self.configuration = []
+        self.nombre_bras = 0
+        self.nombre_coups = 0
+        self.liste_algorithme = []
+        self.option = 0 #peut prendre 0 = Classique, 1 = Dynamique, 2 = Diminution
         self.listes_bras = []
 
     def loadScenario(self):
@@ -22,19 +34,16 @@ class Scenario:
 
         self.convertConfiguration(configuration_list)
 
-    def convertConfiguration(self, configuration_list):
+    def initialiseConfiguration(self, configuration_list):
         """Converti les données recupérés d'un fichier scénario"""
 
-        self.configuration.append(int(configuration_list[0]))
-        self.configuration.append(int(configuration_list[1]))
-
-        list_algorithme = []
+        self.nombre_bras.append(int(configuration_list[0]))
+        self.nombre_coups.append(int(configuration_list[1]))
 
         for i in configuration_list[2]:
             if i not in [' ', ',', '[', ']']:
-                list_algorithme.append(int(i))
+                self.liste_algorithme.append(int(i))
 
-        self.configuration.append(list_algorithme)
 
         config_bras = configuration_list[3:]
 

@@ -136,7 +136,7 @@ class GameZone(QtGui.QWidget):
 
         self.listResAlgo = []
         
-        for i in  range(1,len(self.listAlgo)):
+        for i in range(1, len(self.listAlgo)):
 
             if self.listAlgo[i] == 1:
                 labelAlgo = QtGui.QLabel("Gain Algo hasard")
