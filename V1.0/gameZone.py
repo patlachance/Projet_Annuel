@@ -1,20 +1,29 @@
-from PyQt4 import QtGui,QtCore
-from time import sleep
+from PyQt4 import QtGui, QtCore
 
-import sys
 import moteur
 
 class GameZone(QtGui.QWidget):
     
-    def __init__(self, bras, nbCoups,listAlgo):
+    def __init__(self, *args):
+
         super(GameZone, self).__init__()
-        self.bras=bras
-        self.nbCoups = nbCoups
-        self.listAlgo = listAlgo
-        self.moteurJeu = moteur.Moteur(bras, nbCoups, listAlgo)
+
+        #args[0] = nbBras
+        #args[1] = nbCoups
+        #args[2] = listAlgorithme
+        #args[3] = listBras
+
+        self.listAlgo = args[2]
+
+        if len(args) == 4:
+            self.moteurJeu = moteur.Moteur(args[0], args[1], args[2], args[3])
+        else:
+            self.moteurJeu = moteur.Moteur(args[0], args[1], args[2])
+
         self.initUI()
 
     def initUI(self):
+
 
         ###################
         #Partie Principale#
@@ -30,6 +39,7 @@ class GameZone(QtGui.QWidget):
         self.show()
 
     def initJoueur(self):
+
 
         ###############
         #Partie Joueur#
@@ -63,6 +73,7 @@ class GameZone(QtGui.QWidget):
             labelNbCoupsJoue = QtGui.QLabel("Nombre de coups")
             cadreGain.addWidget(labelNbCoupsJoue,3,0)
 
+
             self.resultatNbCoupsJoue = QtGui.QLabel("0")
             cadreGain.addWidget(self.resultatNbCoupsJoue,3,1)
 
@@ -74,7 +85,7 @@ class GameZone(QtGui.QWidget):
 
             self.listBout = []
 
-            for i in range(0,self.bras):
+            for i in range(0,self.moteurJeu.nbBras):
                 self.listBout.append(QtGui.QPushButton(str(i+1)))
                 #self.listBout[i].setAutoFillBackground(TRUE);   
                 self.listBout[i].setIcon(icon)
@@ -84,16 +95,16 @@ class GameZone(QtGui.QWidget):
                    
             labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
             labelGainMoyenBras.setStyleSheet("border: 0px;")
-            cadreJoueur.addWidget(labelGainMoyenBras,2,0,1,self.bras)
+            cadreJoueur.addWidget(labelGainMoyenBras,2,0,1,self.moteurJeu.nbBras)
 
             labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
             labelNombreCoupsBras.setStyleSheet("border: 0px;")
-            cadreJoueur.addWidget(labelNombreCoupsBras,5,0,1,self.bras)
+            cadreJoueur.addWidget(labelNombreCoupsBras,5,0,1,self.moteurJeu.nbBras)
             
             self.moyenneBras = []
             self.nombreFoisJoueBras = []
 
-            for i in range(0,self.bras):
+            for i in range(0,self.moteurJeu.nbBras):
                 self.moyenneBras.append(QtGui.QLabel(format(0, '.2f')))
                 self.moyenneBras[i].setAlignment(QtCore.Qt.AlignCenter)
                 cadreJoueur.addWidget(self.moyenneBras[i],3,i)
@@ -118,6 +129,7 @@ class GameZone(QtGui.QWidget):
 
     def initAlgo(self):
 
+        
         #############
         #Partie Algo#
         #############
@@ -172,17 +184,18 @@ class GameZone(QtGui.QWidget):
         self.moteurJeu.lancerAlgo(1)
         self.moyenneBras[num].setText(str(format(self.moteurJeu.esperanceJoueur(num),'.2f')))
         self.nombreFoisJoueBras[num].setText(str(self.moteurJeu.nombreFoisJoueBrasJoueur(num)))
-        self.resultatGain.setText(str(format(self.moteurJeu.gain(0),'.2f')))
+        self.resultatGain.setText(str(format(self.moteurJeu.gain(0), '.2f')))
+        
         self.resultatNbCoupsJoue.setText(str(self.moteurJeu.nombreCoupsJoue()))
         self.affichageAlgo(1)
-        if self.moteurJeu.nombreCoupsJoue() == self.nbCoups:
+        if self.moteurJeu.nombreCoupsJoue() == self.moteurJeu.nbCoupsMax:
             self.labelGainEspere.setVisible(True)
             self.resultatGainEspere.setVisible(True)
             for i in self.listBout:
                 i.setDisabled(True)
 
     def auto(self):
-        for i in range(0,self.nbCoups):
+        for i in range(0,self.moteurJeu.nbCoupsMax):
             self.moteurJeu.lancerAlgo(0)
         self.affichageAlgo(0)
 
