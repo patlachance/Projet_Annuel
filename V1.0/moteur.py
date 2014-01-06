@@ -10,7 +10,7 @@ class Moteur:
         self.nbCoupsMax = nbCoupsMax
         self.listBras = []
         self.listAlgorithme = []
-        
+        self.listAlgo = listAlgo
         self.nbAlgorithme = 6
 
         #Initialisation de la liste listBras
@@ -47,8 +47,8 @@ class Moteur:
         self.listAlgorithme[0].actionnerBras(numeroBras)
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
-    def lancerAlgo(self):
-         for i in range(1,len(self.listAlgorithme)):
+    def lancerAlgo(self,tmp):
+         for i in range(tmp,len(self.listAlgorithme)):
               self.listAlgorithme[i].lancerAlgo()
 
     # Cette fonction retourne le gain esperé.

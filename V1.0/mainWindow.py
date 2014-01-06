@@ -92,15 +92,20 @@ class MainWindow(QtGui.QMainWindow):
         algoEpsilonGlouton = QtGui.QCheckBox("Epsilon glouton")
         algoMoyenneGain = QtGui.QCheckBox("Moyenne gain")
         algoUCB = QtGui.QCheckBox("UCB1")
+
+        #optStat = 
+
         validate = QtGui.QPushButton("Valider")
         cancel = QtGui.QPushButton("Annuler")
+
+
 
         listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain,algoUCB]
         
         ############################
         #       TEMPORAIRE         #
         ############################
-        algoJoueur.setDisabled(True)
+        #algoJoueur.setDisabled(True)
         
         self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.listAlgo)
         
@@ -143,12 +148,14 @@ class MainWindow(QtGui.QMainWindow):
         
         listAlgoNumber = []
         
-        for algo, i in zip(listAlgorithme, range(0, 5)):
+        for algo, i in zip(listAlgorithme, range(0, 6)):
             if algo.isChecked() :
                 listAlgoNumber.append(i)
                 
         self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)
         configurationFrame.close()
+        if listAlgoNumber[0]!=0:
+            self.centralWidget.auto()
         
     def checkValidityLineEdit(self, nombreBrasLineEdit, nombreCoupsLineEdit, validButton):
         """Verifie la validité de la valeur entrée pour une LineEdit et modifie en conséquent la cliquabilité du bouton valid"""
@@ -175,7 +182,7 @@ class MainWindow(QtGui.QMainWindow):
         for i in  listAlgoNumber:
             listAlgorithme[i].setChecked(True)
             
-            
+           
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
 
