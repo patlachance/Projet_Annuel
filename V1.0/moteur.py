@@ -1,26 +1,37 @@
+import copy
 import bras
 import algorithme
+
 
 class Moteur:
     """Représente le moteur"""
 
-    def __init__(self, nbBras, nbCoupsMax, listAlgo):
+    def __init__(self, *args):
 
-        self.nbBras = nbBras
-        self.nbCoupsMax = nbCoupsMax
+        #args[0] = nbBras
+        #args[1] = nbCoups
+        #args[2] = listAlgorithme
+        #args[3] = listBras
+
+        self.nbBras = args[0]
+        self.nbCoupsMax = args[1]
         self.listBras = []
         self.listAlgorithme = []
-        self.periode = 4 #par exemple.
+        self.intervalle = 4 #par exemple.
         self.nbAlgorithme = 6
 
-        #Initialisation de la liste listBras
-        for i in range(0,nbBras):
-            self.listBras.append(bras.Bras())	
+        if len(args) == 4:
+            self.listBras = self.args[3]
+        else:
+            #Initialisation de la liste listBras
+            for i in range(0, self.nbBras):
+                self.listBras.append(bras.Bras())
 
         #initialisation des algorithmes.
 
-        for i in range(0,len(listAlgo)):
-            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, self.periode, listAlgo[i]))
+
+        for i in args[2]:
+            self.listAlgorithme.append(algorithme.Algorithme(self.nbCoupsMax, self.listBras, self.intervalle, i))
         
 
     # Cette fonction retourne l'espérance du bras demandé pour le joueur.
@@ -47,23 +58,25 @@ class Moteur:
         self.listAlgorithme[0].actionnerBras(numeroBras)
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
-    def lancerAlgo(self):
-         for i in range(1,len(self.listAlgorithme)):
+    def lancerAlgo(self,tmp):
+         for i in range(tmp,len(self.listAlgorithme)):
               self.listAlgorithme[i].lancerAlgo()
 
     # Cette fonction retourne le gain esperé.
     def gainEspere(self):        
-        algoGainEspere = algorithme.Algorithme(self.nbCoupsMax, self.listBras, self.periode, -1)
+        algoGainEspere = algorithme.Algorithme(self.nbCoupsMax, self.listBras, self.intervalle, -1)
         
         algoGainEspere.lancerAlgoEntierement()
         return algoGainEspere.gain
 
     # Cette fonction change la proba de gain et le gain de chaque bras. 
-    def changerBras(self):
-        for i in range(0,self.nbBras):
+    def changerListeBras(self):
+
+        for i in range(0, self.nbBras):
             self.listBras[i].reinitialiser()
 
         # Je redéfinis les bras de chaque algorithme.
-        for i in range(0,self.nbAlgorithme):
+        for i in range(0, self.nbAlgorithme):
             self.listAlgorithme[i].redefinirBras(self.listBras)
-        
+
+
