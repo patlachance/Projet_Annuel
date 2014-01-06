@@ -57,7 +57,7 @@ class Scenario:
 
         for i in range(0, len(list_changement)):
             liste_bras = []
-
+            liste_bras.append(list_changement[i][1])
 
             if i != len(list_changement) - 1:
                 for j in range(list_changement[i][0] + 1, list_changement[i + 1][0]):
@@ -79,4 +79,3 @@ class Scenario:
                         liste_bras.append(bras.Bras())
 
             self.listes_bras.append(liste_bras)
-

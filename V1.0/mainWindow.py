@@ -88,7 +88,7 @@ class MainWindow(QtGui.QMainWindow):
         pathFilePicked = QtGui.QFileDialog.getOpenFileName(filter="*.sc")
         scenar = scenario.Scenario(pathFilePicked)
         configurationScenario = scenar.loadScenario()
-        self.initCentralWidget(scenar.configuration[0], scenar.configuration[1], scenar.configuration[2], scenar.listes_bras[0])
+        self.initCentralWidget(scenar.configuration[0], scenar.configuration[1], scenar.configuration[2], scenar.listes_bras)
 
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""

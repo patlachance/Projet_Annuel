@@ -60,8 +60,8 @@ class Algorithme:
         if self.numAlgo == 5:
             res = self.algoUCB()
 
-
         self.actionnerBras(res)
+
 
     def lancerAlgoEntierement(self):
         """Cette fonction est appelée pour lancer l'algorithme autant de fois que nbCoupsMax."""
@@ -87,7 +87,7 @@ class Algorithme:
     def algoHasard(self):
         """ Algorithme retournant un bras au hasard"""
 
-        return random.randint(0,len(self.listBras)-1)
+        return random.randint(0, len(self.listBras)-1)
 
     def algoGlouton(self):
         """ Algorithme essayant dans un premier temps tous les bras, puis choisit le meilleur"""
