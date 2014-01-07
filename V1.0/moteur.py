@@ -30,7 +30,7 @@ class Moteur:
 
 
         if len(args) >= 5:
-            self.listBras = self.args[4]
+            self.listBras = args[4]
         else:
             #Initialisation de la liste listBras
             for i in range(0, self.nbBras):
@@ -75,11 +75,13 @@ class Moteur:
     
     # Cette fonction actionne le bras demandé du joueur.
     def actionnerBrasJoueur(self, numeroBras):
+        self.permutationBras()
         self.listAlgorithme[0].actionnerBras(numeroBras)
 
     # Cette fonction lance les algorithmes qui actionneront un bras 
-    def lancerAlgo(self,tmp):
-         for i in range(tmp,len(self.listAlgorithme)):
+    def lancerAlgo(self, tmp):
+        self.permutationBras()
+        for i in range(tmp, len(self.listAlgorithme)):
               self.listAlgorithme[i].lancerAlgo()
 
     # Cette fonction retourne le gain esperé.
@@ -93,19 +95,25 @@ class Moteur:
     def permutationBras(self):
         """Permute les bras"""
 
-        value_list = []
+        if self.nbCoupsMax % self.permutation == self.nombreCoupsJoue():
+            print(self.nbCoupsMax % self.permutation)
 
-        for i in range(0, self.nbBras):
-            value_list.append((self.listBras[i].proba, self.listBras[i].gain))
+            value_list = []
 
-        itertools.permutations(value_list)
+            for i in self.liste_bras:
+                print(i.gain, i.proba)
 
-        for i in range(0, self.nbBras):
-            self.listBras[i].proba = value_list[i][0]
-            self.listBras[i].gain = value_list[i][1]
+            for i in self.listBras:
+                value_list.append((i.proba, i.gain))
 
-        # Je redéfinis les bras de chaque algorithme.
-        for i in range(0, Moteur.nbAlgorithme):
-            self.listAlgorithme[i].redefinirBras(self.listBras)
+            itertools.permutations(value_list)
+
+            for i in range(0, self.nbBras):
+                self.listBras[i].proba = value_list[i][0]
+                self.listBras[i].gain = value_list[i][1]
+
+            # Je redéfinis les bras de chaque algorithme.
+            for i in range(0, Moteur.nbAlgorithme):
+                self.listAlgorithme[i].redefinirBras(self.listBras)
 
 

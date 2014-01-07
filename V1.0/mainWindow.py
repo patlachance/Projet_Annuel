@@ -1,6 +1,7 @@
 from PyQt4 import QtGui, QtCore
 import sys
 import gameZone
+import moteur
 import scenarioLoader
 
 class MainWindow(QtGui.QMainWindow):
@@ -19,7 +20,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def initUI(self):
 
-        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4, 5])
+        self.initCentralWidget(moteur.Moteur(10, 50, [0, 1, 2, 3, 4, 5], 0))
 
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
@@ -30,18 +31,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.move(centralWidgetPosition.topLeft())
 
-    def initCentralWidget(self, *args):
+    def initCentralWidget(self, moteurJeu):
         """Méthode d'initialisation"""
 
-        #args[0] = nbBras
-        #args[1] = nbCoups
-        #args[2] = listAlgorithme
-        #args[3] = listBras
-
-        if len(args) == 4:
-            self.centralWidget = gameZone.GameZone(args[0], args[1], args[2], args[3])
-        else:
-            self.centralWidget = gameZone.GameZone(args[0], args[1], args[2])
+        self.centralWidget = gameZone.GameZone(moteurJeu)
         pouet = self.centralWidget.size()
         self.resize(pouet.width() + 100, pouet.height())
         self.setCentralWidget(self.centralWidget)
@@ -109,7 +102,7 @@ class MainWindow(QtGui.QMainWindow):
         for algo in self.centralWidget.moteurJeu.listAlgorithme:
                 listAlgoNumber.append(algo.numAlgo)
                 
-        self.initCentralWidget(self.centralWidget.moteurJeu.nbBras, self.centralWidget.moteurJeu.nbCoupsMax, listAlgoNumber)
+        self.initCentralWidget(moteur.Moteur(self.centralWidget.moteurJeu.nbBras, self.centralWidget.moteurJeu.nbCoupsMax, listAlgoNumber, self.centralWidget.moteurJeu.option))
         if listAlgoNumber[0]!=0:
             self.centralWidget.auto()
 
@@ -118,7 +111,8 @@ class MainWindow(QtGui.QMainWindow):
 
         pathFilePicked = QtGui.QFileDialog.getOpenFileName(filter="*.sc")
         scenar = scenarioLoader.ScenarioLoader(pathFilePicked)
-        self.initCentralWidget(scenar.nombre_bras, scenar.nombre_coups, scenar.liste_algorithme, scenar.option)
+        moteurJeu = scenar.initialiseConfiguration(scenar.loadScenario())
+        self.initCentralWidget(moteurJeu)
 
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
@@ -156,7 +150,7 @@ class MainWindow(QtGui.QMainWindow):
         #       TEMPORAIRE         #
         ############################
 
-        self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.listAlgo)
+        self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.moteurJeu.listAlgorithme)
 
         algorithmeLabel.setFont(font)
 
@@ -226,7 +220,7 @@ class MainWindow(QtGui.QMainWindow):
     def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
         """Coche les checkbox selon la présence ou non des algorithmes"""
 
-        for i in listAlgoNumber:
+        for i in range(0, len(listAlgoNumber)):
             listAlgorithme[i].setChecked(True)
 
 
@@ -239,8 +233,9 @@ class MainWindow(QtGui.QMainWindow):
         for algo, i in zip(listAlgorithme, range(0, 6)):
             if algo.isChecked():
                 listAlgoNumber.append(i)
-                
-        self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)
+
+        #TODO creer une option
+        self.initCentralWidget(moteur.Moteur(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber, 0))
         configurationFrame.close()
         if listAlgoNumber[0]!=0:
             self.centralWidget.auto()
@@ -264,13 +259,6 @@ class MainWindow(QtGui.QMainWindow):
             self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
     
                     
-    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
-        """Coche les checkbox selon la présence ou non des algorithmes"""
-        
-        for i in listAlgoNumber:
-            listAlgorithme[i].setChecked(True)
-            
-           
 app = QtGui.QApplication(sys.argv)
 main = MainWindow()
 
