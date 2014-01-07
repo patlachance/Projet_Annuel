@@ -86,20 +86,19 @@ class GameZone(QtGui.QWidget):
             self.listBout = []
 
             for i in range(0,self.moteurJeu.nbBras):
-                self.listBout.append(QtGui.QPushButton(str(i+1)))
-                #self.listBout[i].setAutoFillBackground(TRUE);   
-                self.listBout[i].setIcon(icon)
-                self.listBout[i].setIconSize(QtCore.QSize(50,50))
+                self.listBout.append(QtGui.QPushButton(str(i+1)))   
+                self.listBout[i].setFixedSize(60,60) 
+                self.listBout[i].setStyleSheet("background-image:url(button-red.png); color:white;")
                 self.listBout[i].clicked.connect(self.buttonClicked)
-                cadreJoueur.addWidget(self.listBout[i],1,i)
+                cadreJoueur.addWidget(self.listBout[i],3,i)
                    
             labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
             labelGainMoyenBras.setStyleSheet("border: 0px;")
-            cadreJoueur.addWidget(labelGainMoyenBras,2,0,1,self.moteurJeu.nbBras)
+            cadreJoueur.addWidget(labelGainMoyenBras,4,0,1,self.moteurJeu.nbBras)
 
             labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
             labelNombreCoupsBras.setStyleSheet("border: 0px;")
-            cadreJoueur.addWidget(labelNombreCoupsBras,5,0,1,self.moteurJeu.nbBras)
+            cadreJoueur.addWidget(labelNombreCoupsBras,1,0,1,self.moteurJeu.nbBras)
             
             self.moyenneBras = []
             self.nombreFoisJoueBras = []
@@ -107,11 +106,11 @@ class GameZone(QtGui.QWidget):
             for i in range(0,self.moteurJeu.nbBras):
                 self.moyenneBras.append(QtGui.QLabel(format(0, '.2f')))
                 self.moyenneBras[i].setAlignment(QtCore.Qt.AlignCenter)
-                cadreJoueur.addWidget(self.moyenneBras[i],3,i)
+                cadreJoueur.addWidget(self.moyenneBras[i],5,i)
                 
                 self.nombreFoisJoueBras.append(QtGui.QLabel("0"))
                 self.nombreFoisJoueBras[i].setAlignment(QtCore.Qt.AlignCenter)
-                cadreJoueur.addWidget(self.nombreFoisJoueBras[i],4,i)
+                cadreJoueur.addWidget(self.nombreFoisJoueBras[i],2,i)
 
             joueur = QtGui.QHBoxLayout()
             joueur.addLayout(cadreGain)

@@ -28,18 +28,18 @@ class Resultat(QtGui.QWidget):
             principal.addWidget(QtGui.QLabel(str(format(bras.gain,'.2f'))),1,i+1)
             principal.addWidget(QtGui.QLabel(str(format(bras.proba,'.2f'))),2,i+1)
         
-        for nom, i in zip(moteurJeu.listAlgo, range(0,len(moteurJeu.listAlgo))):
-            if nom == 0:
+        for nom, i in zip(moteurJeu.listAlgorithme, range(0,len(moteurJeu.listAlgorithme))):
+            if nom.numAlgo == 0:
                 name="Joueur"
-            elif nom == 1:
+            elif nom.numAlgo == 1:
                 name="Algo hasard"
-            elif nom == 2:
+            elif nom.numAlgo == 2:
                 name="Algo Glouton"
-            elif nom == 3:
+            elif nom.numAlgo == 3:
                 name="Algo Espilon"
-            elif nom == 4:
+            elif nom.numAlgo == 4:
                 name="Algo Moyenne Gain"
-            elif nom == 5:
+            elif nom.numAlgo == 5:
                 name="Algo UCB"
             principal.addWidget(QtGui.QLabel(name),3+i,0)
         
