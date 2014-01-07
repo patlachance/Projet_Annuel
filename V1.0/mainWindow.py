@@ -1,7 +1,7 @@
 from PyQt4 import QtGui, QtCore
 import sys
 import gameZone
-import scenario
+import scenarioLoader
 
 class MainWindow(QtGui.QMainWindow):
     """Classe qui représente la fenêtre principale"""
@@ -50,7 +50,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.fileMenu(menuBar)
         self.editionMenu(menuBar)
-
+        self.scenarioMenu(menuBar)
 
     def initStatusBar(self):
         """Initialisation de la status bar"""
@@ -63,15 +63,11 @@ class MainWindow(QtGui.QMainWindow):
 
         fileMenu = menuBar.addMenu("Fichier")
 
-        loadScenario = QtGui.QAction("Charger un scénario", fileMenu)
-        loadScenario.triggered.connect(self.showLoadScenarioDialog)
-
         exitAction = QtGui.QAction("Quitter", fileMenu)
         exitAction.setShortcut("Ctrl+Q")
         exitAction.setStatusTip("Quitter l'application")
         exitAction.triggered.connect(QtGui.qApp.quit)
 
-        fileMenu.addAction(loadScenario)
         fileMenu.addAction(exitAction)
 
     def editionMenu(self, menuBar):
@@ -80,15 +76,28 @@ class MainWindow(QtGui.QMainWindow):
         editMenu = menuBar.addMenu("Edition")
         configurationAction = QtGui.QAction("Configuration", editMenu)
         configurationAction.triggered.connect(self.showDialogConfiguration)
+
         editMenu.addAction(configurationAction)
+
+    def scenarioMenu(self, menuBar):
+        """Création de l'onglet ScenarioLoader de la menu bar"""
+
+        scenarioMenu = menuBar.addMenu("Scénario")
+
+        creerAction = QtGui.QAction("Créer", scenarioMenu)
+        chargerAction = QtGui.QAction("Charger", scenarioMenu)
+
+        chargerAction.triggered.connect(self.showLoadScenarioDialog)
+
+        scenarioMenu.addAction(creerAction)
+        scenarioMenu.addAction(chargerAction)
 
     def showLoadScenarioDialog(self):
         """Affiche la fenetre de chargement d'un scenario"""
 
         pathFilePicked = QtGui.QFileDialog.getOpenFileName(filter="*.sc")
-        scenar = scenario.Scenario(pathFilePicked)
-        configurationScenario = scenar.loadScenario()
-        self.initCentralWidget(scenar.configuration[0], scenar.configuration[1], scenar.configuration[2], scenar.listes_bras)
+        scenar = scenarioLoader.ScenarioLoader(pathFilePicked)
+        self.initCentralWidget(scenar.nombre_bras, scenar.nombre_coups, scenar.liste_algorithme, scenar.option)
 
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
