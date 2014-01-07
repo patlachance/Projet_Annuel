@@ -77,7 +77,6 @@ class MainWindow(QtGui.QMainWindow):
         exitAction.triggered.connect(QtGui.qApp.quit)
 
         fileMenu.addAction(newGame)
-        fileMenu.addAction(loadScenario)
         fileMenu.addAction(exitAction)
 
     def editionMenu(self, menuBar):
