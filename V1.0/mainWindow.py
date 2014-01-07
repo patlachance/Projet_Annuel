@@ -12,11 +12,23 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
 
         self.centralWidget = None
-        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4, 5])
+        self.initUI()
         self.initMenuBar()
         self.initStatusBar()
-        #self.showMaximized()
         self.show()
+
+    def initUI(self):
+
+        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4, 5])
+
+        # Recuperation du centre de l'écran de l'utilisateur
+        screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
+
+        centralWidgetPosition = self.centralWidget.frameGeometry()
+        # centre la centralWidget par rapport à l'écran
+        centralWidgetPosition.moveCenter(screenCenter)
+
+        self.move(centralWidgetPosition.topLeft())
 
     def initCentralWidget(self, *args):
         """Méthode d'initialisation"""
@@ -30,18 +42,10 @@ class MainWindow(QtGui.QMainWindow):
             self.centralWidget = gameZone.GameZone(args[0], args[1], args[2], args[3])
         else:
             self.centralWidget = gameZone.GameZone(args[0], args[1], args[2])
-
-
-        # Recuperation du centre de l'écran de l'utilisateur
-        screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
-
-        centralWidgetPosition = self.centralWidget.frameGeometry()
-        # centre la centralWidget par rapport à l'écran
-        centralWidgetPosition.moveCenter(screenCenter)
-
-        self.move(centralWidgetPosition.topLeft())
-
+        nnnnpouet = self.centralWidget.size()
+        self.resize(pouet.width() + 100, pouet.height())
         self.setCentralWidget(self.centralWidget)
+
 
     def initMenuBar(self):
         """Initialisation de la menu bar"""
@@ -63,6 +67,10 @@ class MainWindow(QtGui.QMainWindow):
 
         fileMenu = menuBar.addMenu("Fichier")
 
+        newGame = QtGui.QAction("Nouvelle partie", fileMenu)
+        newGame.setShortcut("N")
+        newGame.triggered.connect(self.showNewGame)
+
         loadScenario = QtGui.QAction("Charger un scénario", fileMenu)
         loadScenario.triggered.connect(self.showLoadScenarioDialog)
 
@@ -71,6 +79,7 @@ class MainWindow(QtGui.QMainWindow):
         exitAction.setStatusTip("Quitter l'application")
         exitAction.triggered.connect(QtGui.qApp.quit)
 
+        fileMenu.addAction(newGame)
         fileMenu.addAction(loadScenario)
         fileMenu.addAction(exitAction)
 
@@ -81,6 +90,17 @@ class MainWindow(QtGui.QMainWindow):
         configurationAction = QtGui.QAction("Configuration", editMenu)
         configurationAction.triggered.connect(self.showDialogConfiguration)
         editMenu.addAction(configurationAction)
+
+    def showNewGame(self):
+        """Création d'une nouvelle partie"""
+        listAlgoNumber = []
+
+        for algo in self.centralWidget.moteurJeu.listAlgorithme:
+                listAlgoNumber.append(algo.numAlgo)
+                
+        self.initCentralWidget(self.centralWidget.moteurJeu.nbBras, self.centralWidget.moteurJeu.nbCoupsMax, listAlgoNumber)
+        if listAlgoNumber[0]!=0:
+            self.centralWidget.auto()
 
     def showLoadScenarioDialog(self):
         """Affiche la fenetre de chargement d'un scenario"""
