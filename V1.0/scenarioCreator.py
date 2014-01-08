@@ -1,6 +1,7 @@
 from PyQt4 import QtGui, QtCore
 import moteur
 import configurationFrame
+import guiBras
 
 class ScenarioCreator (QtGui.QWidget):
     """Classe pour la création de scenario"""
@@ -31,6 +32,9 @@ class ScenarioCreator (QtGui.QWidget):
         self.algoMoyenneGain = QtGui.QCheckBox("Moyenne gain")
         self.algoUCB = QtGui.QCheckBox("UCB1")
 
+        self.scrollArea = QtGui.QScrollArea()
+        self.vMainLayout = QtGui.QVBoxLayout()
+        self.gridLayoutConfigBras = QtGui.QGridLayout()
         self.validate = QtGui.QPushButton("Valider")
         self.cancel = QtGui.QPushButton("Annuler")
 
@@ -40,14 +44,14 @@ class ScenarioCreator (QtGui.QWidget):
 
         self.setWindowTitle("Fenêtre de configuration")
 
-        vMainLayout = QtGui.QVBoxLayout()
-        hlayoutBras = QtGui.QHBoxLayout()
-        hLayoutCoups = QtGui.QHBoxLayout()
-        hlayout = QtGui.QHBoxLayout()
+
+        gridLayout1 = QtGui.QGridLayout()
+        gridLayout2 = QtGui.QGridLayout()
+        gridLayoutAlgo = QtGui.QGridLayout()
         hlayoutConfiguration = QtGui.QHBoxLayout()
+        hlayoutWindowButton = QtGui.QHBoxLayout()
 
         font = QtGui.QFont("Times", 14, QtGui.QFont.Bold, True)
-        font.setUnderline(True)
 
         self.radioButtonClassique.setChecked(True)
         self.nombrePermutationLabel.hide()
@@ -63,18 +67,34 @@ class ScenarioCreator (QtGui.QWidget):
 
 
         self.algorithmeLabel.setFont(font)
+        self.configurationLabel.setFont(font)
 
-        hlayoutBras.addWidget(self.nombreBrasLabel)
-        hlayoutBras.addWidget(self.nombreBras)
-        hlayoutBras.addStretch(1)
+        gridLayout1.addWidget(self.nombreBrasLabel, 0, 0)
+        gridLayout1.addWidget(self.nombreBras, 0, 1)
+        gridLayout1.addWidget(self.nombreCoupsLabel, 1, 0)
+        gridLayout1.addWidget(self.nombreCoups, 1, 1)
+        gridLayout1.setColumnStretch(2, 1)
 
-        hLayoutCoups.addWidget(self.nombreCoupsLabel)
-        hLayoutCoups.addWidget(self.nombreCoups)
-        hLayoutCoups.addStretch(1)
+        gridLayout2.addWidget(self.configurationLabel, 2, 0, 1, 3, QtCore.Qt.AlignCenter)
+        gridLayout2.addWidget(self.radioButtonClassique, 3, 0)
+        gridLayout2.addWidget(self.radioButtonDynamique, 3, 1)
+        gridLayout2.addWidget(self.radioButtonDiminution, 3, 2)
 
-        vMainLayout.addLayout(hlayoutBras)
-        vMainLayout.addLayout(hLayoutCoups)
+        hlayoutConfiguration.addWidget(self.nombrePermutationLabel)
+        hlayoutConfiguration.addWidget(self.permutationLineEdit)
+        hlayoutConfiguration.addWidget(self.nombreIntervalleLabel)
+        hlayoutConfiguration.addWidget(self.intervalleLineEdit)
 
+        gridLayoutAlgo.addWidget(self.algorithmeLabel, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
+        gridLayoutAlgo.addWidget(self.algoJoueur, 1, 0)
+        gridLayoutAlgo.addWidget(self.algoHasard, 1, 1)
+        gridLayoutAlgo.addWidget(self.algoGlouton, 2, 0)
+        gridLayoutAlgo.addWidget(self.algoEpsilonGlouton, 2, 1,)
+        gridLayoutAlgo.addWidget(self.algoMoyenneGain, 3, 0)
+        gridLayoutAlgo.addWidget(self.algoUCB, 3, 1)
+
+        hlayoutWindowButton.addWidget(self.cancel)
+        hlayoutWindowButton.addWidget(self.validate)
 
         self.nombreBras.setText("10")
         self.nombreCoups.setText("50")
@@ -87,6 +107,20 @@ class ScenarioCreator (QtGui.QWidget):
         self.algoMoyenneGain.setChecked(True)
         self.algoUCB.setChecked(True)
 
+        self.nombreBras.setFixedWidth(100)
+        self.nombreCoups.setFixedWidth(100)
+        self.permutationLineEdit.setFixedWidth(75)
+        self.intervalleLineEdit.setFixedWidth(75)
+        self.cancel.setFixedWidth(75)
+        self.validate.setFixedWidth(75)
+
+        self.vMainLayout.addLayout(gridLayout1)
+        self.vMainLayout.addLayout(gridLayout2)
+        self.vMainLayout.addLayout(hlayoutConfiguration)
+        self.vMainLayout.addLayout(gridLayoutAlgo)
+        self.createWidgetConfigurationBras()
+        self.vMainLayout.addLayout(hlayoutWindowButton)
+
         # Events
         self.cancel.clicked.connect(self.close)
         self.validate.clicked.connect(lambda: self.validateConfiguration(listAlgorithme))
@@ -97,9 +131,9 @@ class ScenarioCreator (QtGui.QWidget):
         self.nombreBras.textEdited.connect(self.checkValidityLineEdit)
         self.nombreCoups.textEdited.connect(self.checkValidityLineEdit)
 
-        self.setLayout(vMainLayout)
-
-        self.setFixedSize(self.sizeHint())
+        self.setLayout(self.vMainLayout)
+        self.setGeometry(100, 100, 1100, 600)
+        #self.setFixedSize(self.sizeHint())
 
 
     def checkValidityLineEdit(self):
@@ -153,6 +187,8 @@ class ScenarioCreator (QtGui.QWidget):
 
             self.emit(QtCore.SIGNAL(self.validate.setDisabled(not validity)))
 
+        if type(numberArm) is int and numberArm > 0:
+            self.createWidgetConfigurationBras()
 
     def validateConfiguration(self, listAlgorithme):
         """Valide la configuration envoyée"""
@@ -169,29 +205,24 @@ class ScenarioCreator (QtGui.QWidget):
     def configurationBras(self):
 
         nombreBras = int(self.nombreBras.displayText())
-        gLayout = QtGui.QGridLayout()
 
         for i in range(0, nombreBras):
-            hlayout = QtGui.QHBoxLayout()
-            stringLabel = "Bras n°" + str(i + 1) + "  "
-            labelBras = QtGui.QLabel(stringLabel)
-            probaLabel = QtGui.QLabel("Probabilité ")
-            gainLabel = QtGui.QLabel("Gain ")
-            proba = QtGui.QLineEdit()
-            gain = QtGui.QLineEdit()
-            random = QtGui.QPushButton("Random")
-            hlayout.addWidget(labelBras)
-            hlayout.addWidget(probaLabel)
-            hlayout.addWidget(proba)
-            hlayout.addWidget(gainLabel)
-            hlayout.addWidget(gain)
-            hlayout.addWidget(random)
-            if i % 2 == 0:
-                hlayout.addSpacing(50)
-            gLayout.addLayout(hlayout, i / 2, i % 2)
+            b = guiBras.GuiBras(self.validate)
+            b.setLabelBras(i)
 
-        return gLayout
+            self.gridLayoutConfigBras.addWidget(b, int(i / 2), int(i % 2))
 
+
+    def createWidgetConfigurationBras(self):
+
+        self.vMainLayout.removeWidget(self.scrollArea)
+        self.scrollArea = None
+        self.scrollArea = QtGui.QScrollArea()
+        configurationBrasWidget = QtGui.QWidget()
+        self.configurationBras()
+        configurationBrasWidget.setLayout(self.gridLayoutConfigBras)
+        self.scrollArea.setWidget(configurationBrasWidget)
+        self.vMainLayout.insertWidget(4, self.scrollArea)
 
     def showScenarioCreatorFrame(self):
         self.show()
