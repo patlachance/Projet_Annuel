@@ -1,6 +1,7 @@
 import random
 import copy
-from math import sqrt, log 
+from math import sqrt, log
+
 
 class Algorithme:
     """Classe mère des algorithmes."""
@@ -11,7 +12,9 @@ class Algorithme:
         self.nbCoupsMax = nbCoupsMax
         self.intervalle = intervalle
         self.listBras = copy.deepcopy(listBras)
-
+        self.nbBras = len(listBras)
+        self.meilleurScenario = []
+        self.nbSequenceMax = 40000
         self.numAlgo = numAlgo
 
         self.historique = []
@@ -49,11 +52,11 @@ class Algorithme:
         return self.listBras[numeroBras].esperanceCalculee()        
 
     def esperanceVeritable(self, numeroBras):
-        """ Cette fonction retournr l'espérance véritable."""
+        """ Cette fonction retourne l'espérance véritable."""
         return self.listBras[numeroBras].esperanceVeritable()        
 
     def nbFoisActionne(self, numeroBras):
-        """ Cette fonction retournr l'espérance véritable."""
+        """ Cette fonction retourne le nombre de bras actionne."""
         return self.listBras[numeroBras].nbFoisActionne       
         
 
@@ -90,17 +93,69 @@ class Algorithme:
 
     
     def algoGainEspere(self):
-        """ Algorithme utilisé pour calculer le gain espéré"""    
-        numeroMeilleurBras=-1
-        gainMeilleurBras=-1
+        """ Algorithme utilisé pour calculer le gain espéré (ORACLE)"""    
+        # SI C'EST LE PREMIER APPEL DE LA FONCTION, LE CALCUL DE LA MEILLEURE SEQUENCE EST REALISE.
+        if self.nbCoupsJoue == 0:        
+            numSequence = 0
+            gainMaxScenario = 0
+            sequence = []
+       
+            while numSequence < self.nbSequenceMax :
+                numSequence += 1
+                longueurSequence = len(sequence)
 
-        # Pour chaque bras, je vais regarder la VERITABLE espérance et essayer de trouver le meilleur bras.
-        for i in range(0, len(self.listBras)):
-            if self.esperanceVeritable(i) > gainMeilleurBras:
-                numeroMeilleurBras = i
-                gainMeilleurBras = self.esperanceVeritable(i)
+                #ici, un test. Si toutes les valeurs se sequences sont au max, faut augmenter sa taille.
+                augmenterTaille = True
+                for i in range(0, longueurSequence) :
+                    if (sequence[i] != self.nbBras -1) :
+                        augmenterTaille = False
 
-        return numeroMeilleurBras
+                # S'il faut augmenter la longueur de la séquence
+                if longueurSequence == 0 or augmenterTaille:
+                    sequence.append(0)
+                    longueurSequence = len(sequence)
+                    for i in range(0, longueurSequence):
+                        sequence[i] = 0
+                # sinon, on incrémente.
+                else:
+                    sequence[longueurSequence-1] += 1
+                    for i in range(longueurSequence-1, 0, -1):
+                        if sequence[i] == self.nbBras:
+                            sequence[i] = 0
+                            sequence[i-1] += 1 
+
+
+                #Maintenant, on a une séquence à tester. comment je vais faire moi ?
+                # tiens, j'ai une idée : je vais créer une liste de scénario. comme ça, pas d'emmerdes ! \o/
+                scenario = []
+                for i in range(0,self.nbCoupsMax):
+                    scenario.append(sequence[i % longueurSequence])                
+
+                #calcul du gain
+                gainTotalScenario = 0
+                for i in range(0,self.nbCoupsMax):
+                    gain = self.esperanceVeritable(scenario[i])
+                
+                    # diminuer les gains selon l'historique (si intervalle > 0)
+                    if self.intervalle > 0 :     
+                        debutParcours = i - self.intervalle
+                        if debutParcours < 0:
+                            debutParcours = 0
+                        nbFoisBrasActionne = 0
+                        for j in range(debutParcours, i):
+                            if scenario[j] == scenario[i]:
+                                nbFoisBrasActionne += 1
+                        gain *= (self.intervalle-nbFoisBrasActionne)/self.intervalle
+
+                    gainTotalScenario += gain
+                
+                if gainTotalScenario > gainMaxScenario:
+                    gainMaxScenario = gainTotalScenario
+                    self.meilleurScenario = scenario
+            for i in range(0,len(self.meilleurScenario)):
+                print(self.meilleurScenario[i])
+
+        return self.meilleurScenario[self.nbCoupsJoue]
 
 
     def algoHasard(self):
