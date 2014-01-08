@@ -152,8 +152,6 @@ class Algorithme:
                 if gainTotalScenario > gainMaxScenario:
                     gainMaxScenario = gainTotalScenario
                     self.meilleurScenario = scenario
-            for i in range(0,len(self.meilleurScenario)):
-                print(self.meilleurScenario[i])
 
         return self.meilleurScenario[self.nbCoupsJoue]
 
