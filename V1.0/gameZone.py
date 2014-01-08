@@ -160,6 +160,15 @@ class GameZone(QtGui.QWidget):
       
         sender = self.sender()
         num = int(sender.text()) - 1
+
+        if self.moteurJeu.option == 1:
+            modulo = self.moteurJeu.nombreCoupsJoue() % self.moteurJeu.permutation
+            dividende = self.moteurJeu.nombreCoupsJoue() / self.moteurJeu.permutation
+
+            if modulo == 0 and self.moteurJeu.nombreCoupsJoue() > 0:
+                if dividende*self.moteurJeu.permutation == self.moteurJeu.nombreCoupsJoue():
+                    self.moteurJeu.permutationBras()
+
         self.moteurJeu.actionnerBrasJoueur(num)
         self.moteurJeu.lancerAlgo(1)
         self.moyenneBras[num].setText(str(format(self.moteurJeu.esperanceJoueur(num),'.2f')))
@@ -181,5 +190,5 @@ class GameZone(QtGui.QWidget):
 
     def affichageAlgo(self, tmp):
         for i in range(tmp, len(self.moteurJeu.listAlgorithme)):
-            self.listResAlgo[i-tmp].setText(str(format(self.moteurJeu.gain(i),'.2f')))
+            self.listResAlgo[i-tmp].setText(str(format(self.moteurJeu.gain(i), '.2f')))
         

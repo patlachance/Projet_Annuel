@@ -1,15 +1,15 @@
 from PyQt4 import QtGui, QtCore
 import moteur
-import configurationFrame
 
-class ScenarioCreator (QtGui.QWidget):
-    """Classe pour la création de scenario"""
+class ConfigurationFrame(QtGui.QWidget):
+    """Fenetre de configuration"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, centralWidget=None):
 
-        super(ScenarioCreator, self).__init__()
+        super(ConfigurationFrame, self).__init__()
 
         self.parent = parent
+        self.centralWidget = centralWidget
         self.nombreBrasLabel = QtGui.QLabel("Nombre de bras : ")
         self.nombreCoupsLabel = QtGui.QLabel("Nombre de coups : ")
         self.nombreBras = QtGui.QLineEdit()
@@ -39,12 +39,8 @@ class ScenarioCreator (QtGui.QWidget):
     def showDialogConfiguration(self):
 
         self.setWindowTitle("Fenêtre de configuration")
-
-        vMainLayout = QtGui.QVBoxLayout()
-        hlayoutBras = QtGui.QHBoxLayout()
-        hLayoutCoups = QtGui.QHBoxLayout()
-        hlayout = QtGui.QHBoxLayout()
-        hlayoutConfiguration = QtGui.QHBoxLayout()
+        gridLayout = QtGui.QGridLayout()
+        gridLayout.setSpacing(10)
 
         font = QtGui.QFont("Times", 14, QtGui.QFont.Bold, True)
         font.setUnderline(True)
@@ -61,31 +57,36 @@ class ScenarioCreator (QtGui.QWidget):
 
         listAlgorithme = [self.algoJoueur, self.algoHasard, self.algoGlouton, self.algoEpsilonGlouton, self.algoMoyenneGain, self.algoUCB]
 
+        self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.moteurJeu.listAlgorithme)
 
         self.algorithmeLabel.setFont(font)
 
-        hlayoutBras.addWidget(self.nombreBrasLabel)
-        hlayoutBras.addWidget(self.nombreBras)
-        hlayoutBras.addStretch(1)
+        gridLayout.addWidget(self.nombreBrasLabel, 0, 0)
+        gridLayout.addWidget(self.nombreBras, 0, 1)
+        gridLayout.addWidget(self.nombreCoupsLabel, 1, 0)
+        gridLayout.addWidget(self.nombreCoups, 1, 1)
+        gridLayout.addWidget(self.configurationLabel, 2, 0, 1, 0)
+        gridLayout.addWidget(self.radioButtonClassique, 3, 0)
+        gridLayout.addWidget(self.radioButtonDynamique, 3, 1)
+        gridLayout.addWidget(self.radioButtonDiminution, 3, 2)
+        gridLayout.addWidget(self.nombrePermutationLabel, 4, 0, 1, 0)
+        gridLayout.addWidget(self.permutationLineEdit, 4, 2)
+        gridLayout.addWidget(self.nombreIntervalleLabel, 4, 0, 1, 0)
+        gridLayout.addWidget(self.intervalleLineEdit, 4, 2)
+        gridLayout.addWidget(self.algorithmeLabel, 5, 0, 1, 0, QtCore.Qt.AlignCenter)
+        gridLayout.addWidget(self.algoJoueur, 6, 0)
+        gridLayout.addWidget(self.algoHasard, 6, 1)
+        gridLayout.addWidget(self.algoGlouton, 7, 0)
+        gridLayout.addWidget(self.algoEpsilonGlouton, 7, 1)
+        gridLayout.addWidget(self.algoMoyenneGain, 8, 0)
+        gridLayout.addWidget(self.algoUCB, 8, 1)
+        gridLayout.addWidget(self.cancel, 9, 0)
+        gridLayout.addWidget(self.validate, 9, 1)
 
-        hLayoutCoups.addWidget(self.nombreCoupsLabel)
-        hLayoutCoups.addWidget(self.nombreCoups)
-        hLayoutCoups.addStretch(1)
-
-        vMainLayout.addLayout(hlayoutBras)
-        vMainLayout.addLayout(hLayoutCoups)
-
-
-        self.nombreBras.setText("10")
-        self.nombreCoups.setText("50")
-        self.permutationLineEdit.setText("5")
-        self.intervalleLineEdit.setText("4")
-        self.algoJoueur.setChecked(True)
-        self.algoHasard.setChecked(True)
-        self.algoGlouton.setChecked(True)
-        self.algoEpsilonGlouton.setChecked(True)
-        self.algoMoyenneGain.setChecked(True)
-        self.algoUCB.setChecked(True)
+        self.nombreBras.setText(str(self.centralWidget.moteurJeu.nbBras))
+        self.nombreCoups.setText(str(self.centralWidget.moteurJeu.nbCoupsMax))
+        self.permutationLineEdit.setText(str(self.centralWidget.moteurJeu.permutation))
+        self.intervalleLineEdit.setText(str(self.centralWidget.moteurJeu.intervalle))
 
         # Events
         self.cancel.clicked.connect(self.close)
@@ -97,10 +98,14 @@ class ScenarioCreator (QtGui.QWidget):
         self.nombreBras.textEdited.connect(self.checkValidityLineEdit)
         self.nombreCoups.textEdited.connect(self.checkValidityLineEdit)
 
-        self.setLayout(vMainLayout)
-
+        self.setLayout(gridLayout)
         self.setFixedSize(self.sizeHint())
 
+    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
+        """Coche les checkbox selon la présence ou non des algorithmes"""
+
+        for i in range(0, len(listAlgoNumber)):
+            listAlgorithme[i].setChecked(True)
 
     def checkValidityLineEdit(self):
 
@@ -164,35 +169,18 @@ class ScenarioCreator (QtGui.QWidget):
             if algo.isChecked():
                 listAlgoNumber.append(i)
 
+        if self.radioButtonClassique.isChecked():
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 0))
+        elif self.radioButtonDynamique.isChecked():
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 1, int(self.permutationLineEdit.displayText())))
+        elif self.radioButtonDiminution.isChecked():
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 2, int(self.intervalleLineEdit.displayText())))
+
         self.close()
 
-    def configurationBras(self):
-
-        nombreBras = int(self.nombreBras.displayText())
-        gLayout = QtGui.QGridLayout()
-
-        for i in range(0, nombreBras):
-            hlayout = QtGui.QHBoxLayout()
-            stringLabel = "Bras n°" + str(i + 1) + "  "
-            labelBras = QtGui.QLabel(stringLabel)
-            probaLabel = QtGui.QLabel("Probabilité ")
-            gainLabel = QtGui.QLabel("Gain ")
-            proba = QtGui.QLineEdit()
-            gain = QtGui.QLineEdit()
-            random = QtGui.QPushButton("Random")
-            hlayout.addWidget(labelBras)
-            hlayout.addWidget(probaLabel)
-            hlayout.addWidget(proba)
-            hlayout.addWidget(gainLabel)
-            hlayout.addWidget(gain)
-            hlayout.addWidget(random)
-            if i % 2 == 0:
-                hlayout.addSpacing(50)
-            gLayout.addLayout(hlayout, i / 2, i % 2)
-
-        return gLayout
+        if listAlgoNumber[0] != 0:
+            self.centralWidget.auto()
 
 
-    def showScenarioCreatorFrame(self):
+    def showConfigurationFrame(self):
         self.show()
-

@@ -3,6 +3,8 @@ import sys
 import gameZone
 import moteur
 import scenarioLoader
+import configurationFrame
+import scenarioCreator
 
 class MainWindow(QtGui.QMainWindow):
     """Classe qui représente la fenêtre principale"""
@@ -77,7 +79,8 @@ class MainWindow(QtGui.QMainWindow):
 
         editMenu = menuBar.addMenu("Edition")
         configurationAction = QtGui.QAction("Configuration", editMenu)
-        configurationAction.triggered.connect(self.showDialogConfiguration)
+        config = configurationFrame.ConfigurationFrame(self, self.centralWidget)
+        configurationAction.triggered.connect(config.showConfigurationFrame)
 
         editMenu.addAction(configurationAction)
 
@@ -89,6 +92,8 @@ class MainWindow(QtGui.QMainWindow):
 
         creerAction = QtGui.QAction("Créer", scenarioMenu)
         chargerAction = QtGui.QAction("Charger", scenarioMenu)
+
+        creerAction.triggered.connect(scenarioCreator.ScenarioCreator().showScenarioCreatorFrame)
 
         chargerAction.triggered.connect(self.showLoadScenarioDialog)
 
@@ -103,17 +108,20 @@ class MainWindow(QtGui.QMainWindow):
                 listAlgoNumber.append(algo.numAlgo)
                 
         self.initCentralWidget(moteur.Moteur(self.centralWidget.moteurJeu.nbBras, self.centralWidget.moteurJeu.nbCoupsMax, listAlgoNumber, self.centralWidget.moteurJeu.option))
-        if listAlgoNumber[0]!=0:
+
+        if listAlgoNumber[0] != 0:
             self.centralWidget.auto()
 
     def showLoadScenarioDialog(self):
         """Affiche la fenetre de chargement d'un scenario"""
 
         pathFilePicked = QtGui.QFileDialog.getOpenFileName(filter="*.sc")
-        scenar = scenarioLoader.ScenarioLoader(pathFilePicked)
-        moteurJeu = scenar.initialiseConfiguration(scenar.loadScenario())
-        self.initCentralWidget(moteurJeu)
+        if pathFilePicked != '':
+            scenar = scenarioLoader.ScenarioLoader(pathFilePicked)
+            moteurJeu = scenar.initialiseConfiguration(scenar.loadScenario())
+            self.initCentralWidget(moteurJeu)
 
+#######################################################
     def showDialogConfiguration(self):
         """Boite de dialogue demandant le nombre de coups"""
 
@@ -138,14 +146,12 @@ class MainWindow(QtGui.QMainWindow):
 
         algoUCB = QtGui.QCheckBox("UCB1")
 
-        #optStat = 
-
         validate = QtGui.QPushButton("Valider")
         cancel = QtGui.QPushButton("Annuler")
 
         listAlgorithme = [algoJoueur, algoHasard, algoGlouton, algoEpsilonGlouton, algoMoyenneGain, algoUCB]
 
-        
+
         ############################
         #       TEMPORAIRE         #
         ############################
@@ -173,29 +179,23 @@ class MainWindow(QtGui.QMainWindow):
 
         # Events
         cancel.clicked.connect(configurationFrame.close)
-        validate.clicked.connect(lambda: self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme , configurationFrame))
+        validate.clicked.connect(lambda: self.validateConfiguration(nombreBras, nombreCoups, listAlgorithme, configurationFrame))
         cancel.setFocusPolicy(QtCore.Qt.NoFocus)
         nombreBras.textEdited.connect(nombreBras.setText)
         nombreBras.textEdited.connect(lambda: self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
         nombreCoups.textEdited.connect(nombreCoups.setText)
         nombreCoups.textEdited.connect(lambda: self.checkValidityLineEdit(nombreBras, nombreCoups, validate))
-        
+
         configurationFrame.setLayout(gridLayout)
         configurationFrame.setFixedSize(configurationFrame.sizeHint())
         configurationFrame.show()
 
 
-    def validateConfiguration(self, nombreBras, nombreCoups, listAlgorithme, configurationFrame):
-        """Valide la configuration envoyée"""
+    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
+        """Coche les checkbox selon la présence ou non des algorithmes"""
 
-        listAlgoNumber = []
-
-        for algo, i in zip(listAlgorithme, range(0, 5)):
-            if algo.isChecked():
-                listAlgoNumber.append(i)
-
-        self.initCentralWidget(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber)
-        configurationFrame.close()
+        for i in range(0, len(listAlgoNumber)):
+            listAlgorithme[i].setChecked(True)
 
     def checkValidityLineEdit(self, nombreBrasLineEdit, nombreCoupsLineEdit, validButton):
         """Verifie la validité de la valeur entrée pour une LineEdit et modifie en conséquent la cliquabilité du bouton valid"""
@@ -214,15 +214,6 @@ class MainWindow(QtGui.QMainWindow):
                 validity = False
 
             self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
-
-
-
-    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
-        """Coche les checkbox selon la présence ou non des algorithmes"""
-
-        for i in range(0, len(listAlgoNumber)):
-            listAlgorithme[i].setChecked(True)
-
 
     def validateConfiguration(self, nombreBras, nombreCoups, listAlgorithme, configurationFrame) :
         """Valide la configuration envoyée"""
@@ -234,29 +225,14 @@ class MainWindow(QtGui.QMainWindow):
             if algo.isChecked():
                 listAlgoNumber.append(i)
 
-        #TODO creer une option
         self.initCentralWidget(moteur.Moteur(int(nombreBras.displayText()), int(nombreCoups.displayText()), listAlgoNumber, 0))
         configurationFrame.close()
-        if listAlgoNumber[0]!=0:
+        if listAlgoNumber[0] != 0:
             self.centralWidget.auto()
+
+            ###########################################
         
-    def checkValidityLineEdit(self, nombreBrasLineEdit, nombreCoupsLineEdit, validButton):
-        """Verifie la validité de la valeur entrée pour une LineEdit et modifie en conséquent la cliquabilité du bouton valid"""
-    
-        numberArm = 0
-        numberBlow = 0
-        validity = True
-        
-        try:
-            numberArm = int(nombreBrasLineEdit.displayText())
-            numberBlow = int(nombreCoupsLineEdit.displayText())
-        except ValueError:
-            validity = False
-        finally:
-            if numberArm < 1 or numberBlow < 1:
-                validity = False
-                      
-            self.emit(QtCore.SIGNAL(validButton.setDisabled(not validity)))
+
     
                     
 app = QtGui.QApplication(sys.argv)

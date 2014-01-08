@@ -111,7 +111,7 @@ class Algorithme:
     def algoGlouton(self):
         """ Algorithme essayant dans un premier temps tous les bras, puis choisit le meilleur"""
         jeuApprentissage = 0.5 # 50% du nombre de coups max sera utilisé pour connaitre le meilleur bras.  
-        if self.nbCoupsJoue < jeuApprentissage*self.nbCoupsMax :
+        if self.nbCoupsJoue < jeuApprentissage*self.nbCoupsMax:
             res = self.nbCoupsJoue % len(self.listBras)
         else:
             numeroMeilleurBras=-1
