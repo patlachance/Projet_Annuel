@@ -1,12 +1,12 @@
 from PyQt4 import QtGui, QtCore
 import moteur
 
-class ConfigurationFrame(QtGui.QWidget):
+class ConfigurationFrame(QtGui.QDialog):
     """Fenetre de configuration"""
 
     def __init__(self, parent=None, centralWidget=None):
 
-        super(ConfigurationFrame, self).__init__()
+        super(ConfigurationFrame, self).__init__(parent)
 
         self.parent = parent
         self.centralWidget = centralWidget
@@ -123,15 +123,13 @@ class ConfigurationFrame(QtGui.QWidget):
             self.nombreIntervalleLabel.hide()
             self.intervalleLineEdit.hide()
 
-            self.permutationLineEdit.textEdited.connect(self.checkValidityLineEdit)
-
         if sender == self.radioButtonDiminution:
             self.nombrePermutationLabel.hide()
             self.permutationLineEdit.hide()
             self.nombreIntervalleLabel.show()
             self.intervalleLineEdit.show()
 
-            self.intervalleLineEdit.textEdited.connect(self.checkValidityLineEdit)
+        self.checkValidityLineEdit
 
         numberArm = 0
         numberBlow = 0
@@ -183,4 +181,5 @@ class ConfigurationFrame(QtGui.QWidget):
 
 
     def showConfigurationFrame(self):
+
         self.show()

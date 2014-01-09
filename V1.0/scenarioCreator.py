@@ -1,23 +1,26 @@
 from PyQt4 import QtGui, QtCore
-import moteur
-import configurationFrame
 import guiBras
+import random
+import moteur
 
-class ScenarioCreator (QtGui.QWidget):
+
+class ScenarioCreator (QtGui.QDialog):
     """Classe pour la création de scenario"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, centralWidget=None):
 
-        super(ScenarioCreator, self).__init__()
+        super(ScenarioCreator, self).__init__(parent)
 
         self.parent = parent
+        self.centralWidget = centralWidget
+        self.listGuiBras = []
         self.nombreBrasLabel = QtGui.QLabel("Nombre de bras : ")
         self.nombreCoupsLabel = QtGui.QLabel("Nombre de coups : ")
         self.nombreBras = QtGui.QLineEdit()
         self.nombreCoups = QtGui.QLineEdit()
         self.radioButtonGroup = QtGui.QButtonGroup()
         self.configurationLabel = QtGui.QLabel("Configuration :")
-        self.radioButtonClassique = QtGui.QRadioButton("Classique")
+        self.radioButtonClassique = QtGui.QRadioButton("Statique")
         self.radioButtonDynamique = QtGui.QRadioButton("Dynamique")
         self.radioButtonDiminution = QtGui.QRadioButton("Diminution")
         self.nombrePermutationLabel = QtGui.QLabel("Fréquence des permutations : ")
@@ -32,7 +35,7 @@ class ScenarioCreator (QtGui.QWidget):
         self.algoMoyenneGain = QtGui.QCheckBox("Moyenne gain")
         self.algoUCB = QtGui.QCheckBox("UCB1")
 
-        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea = None
         self.vMainLayout = QtGui.QVBoxLayout()
         self.gridLayoutConfigBras = QtGui.QGridLayout()
         self.validate = QtGui.QPushButton("Valider")
@@ -62,9 +65,6 @@ class ScenarioCreator (QtGui.QWidget):
         self.radioButtonGroup.addButton(self.radioButtonClassique)
         self.radioButtonGroup.addButton(self.radioButtonDynamique)
         self.radioButtonGroup.addButton(self.radioButtonDiminution)
-
-        listAlgorithme = [self.algoJoueur, self.algoHasard, self.algoGlouton, self.algoEpsilonGlouton, self.algoMoyenneGain, self.algoUCB]
-
 
         self.algorithmeLabel.setFont(font)
         self.configurationLabel.setFont(font)
@@ -96,8 +96,8 @@ class ScenarioCreator (QtGui.QWidget):
         hlayoutWindowButton.addWidget(self.cancel)
         hlayoutWindowButton.addWidget(self.validate)
 
-        self.nombreBras.setText("10")
-        self.nombreCoups.setText("50")
+        self.nombreBras.setText("5")
+        self.nombreCoups.setText("10")
         self.permutationLineEdit.setText("5")
         self.intervalleLineEdit.setText("4")
         self.algoJoueur.setChecked(True)
@@ -121,20 +121,52 @@ class ScenarioCreator (QtGui.QWidget):
         self.createWidgetConfigurationBras()
         self.vMainLayout.addLayout(hlayoutWindowButton)
 
+        listAlgorithme = [self.algoJoueur, self.algoHasard, self.algoGlouton, self.algoEpsilonGlouton, self.algoMoyenneGain, self.algoUCB]
+        self.setCheckedAlgoBox(listAlgorithme, self.centralWidget.moteurJeu.listAlgorithme)
+
         # Events
         self.cancel.clicked.connect(self.close)
         self.validate.clicked.connect(lambda: self.validateConfiguration(listAlgorithme))
+        #self.validate.clicked.connect(self.saveScenario)
         self.cancel.setFocusPolicy(QtCore.Qt.NoFocus)
         self.radioButtonClassique.clicked.connect(self.checkValidityLineEdit)
         self.radioButtonDynamique.clicked.connect(self.checkValidityLineEdit)
         self.radioButtonDiminution.clicked.connect(self.checkValidityLineEdit)
         self.nombreBras.textEdited.connect(self.checkValidityLineEdit)
+        self.nombreBras.textEdited.connect(self.createDynamicArms)
         self.nombreCoups.textEdited.connect(self.checkValidityLineEdit)
 
         self.setLayout(self.vMainLayout)
         self.setGeometry(100, 100, 1100, 600)
-        #self.setFixedSize(self.sizeHint())
 
+
+    def setCheckedAlgoBox(self, listAlgorithme, listAlgoNumber):
+        """Coche les checkbox selon la présence ou non des algorithmes"""
+
+        for i in range(0, len(listAlgoNumber)):
+            listAlgorithme[i].setChecked(True)
+
+    def validateConfiguration(self, listAlgorithme):
+        """Valide la configuration envoyée"""
+
+        listAlgoNumber = []
+
+        #Penser à modifier la range en fonction du nombre d'algo
+        for algo, i in zip(listAlgorithme, range(0, 6)):
+            if algo.isChecked():
+                listAlgoNumber.append(i)
+
+        if self.radioButtonClassique.isChecked():
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 0))
+        elif self.radioButtonDynamique.isChecked():
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 1, int(self.permutationLineEdit.displayText())))
+        elif self.radioButtonDiminution.isChecked():
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 2, int(self.intervalleLineEdit.displayText())))
+
+        self.close()
+
+        if listAlgoNumber[0] != 0:
+            self.centralWidget.auto()
 
     def checkValidityLineEdit(self):
 
@@ -152,15 +184,12 @@ class ScenarioCreator (QtGui.QWidget):
             self.nombreIntervalleLabel.hide()
             self.intervalleLineEdit.hide()
 
-            self.permutationLineEdit.textEdited.connect(self.checkValidityLineEdit)
 
         if sender == self.radioButtonDiminution:
             self.nombrePermutationLabel.hide()
             self.permutationLineEdit.hide()
             self.nombreIntervalleLabel.show()
             self.intervalleLineEdit.show()
-
-            self.intervalleLineEdit.textEdited.connect(self.checkValidityLineEdit)
 
         numberArm = 0
         numberBlow = 0
@@ -187,36 +216,42 @@ class ScenarioCreator (QtGui.QWidget):
 
             self.emit(QtCore.SIGNAL(self.validate.setDisabled(not validity)))
 
-        if type(numberArm) is int and numberArm > 0:
+
+    def createDynamicArms(self):
+
+        numberArm = 0
+        validity = True
+
+        try:
+            numberArm = int(self.nombreBras.displayText())
+        except:
+            validity = False
+        finally:
+            if numberArm < 1:
+                validity = False
+
+        if validity:
+            self.vMainLayout.removeWidget(self.scrollArea)
             self.createWidgetConfigurationBras()
-
-    def validateConfiguration(self, listAlgorithme):
-        """Valide la configuration envoyée"""
-
-        listAlgoNumber = []
-
-        #Penser à modifier la range en fonction du nombre d'algo
-        for algo, i in zip(listAlgorithme, range(0, 6)):
-            if algo.isChecked():
-                listAlgoNumber.append(i)
-
-        self.close()
 
     def configurationBras(self):
 
         nombreBras = int(self.nombreBras.displayText())
+        gridLayout = QtGui.QGridLayout()
+        listBras =[]
 
         for i in range(0, nombreBras):
             b = guiBras.GuiBras(self.validate)
             b.setLabelBras(i)
-
-            self.gridLayoutConfigBras.addWidget(b, int(i / 2), int(i % 2))
+            b.setInfoGuiBras(i, '', '')
+            listBras.append(b.getInfoGuiBras())
+            gridLayout.addWidget(b, int(i / 2), int(i % 2))
+        self.gridLayoutConfigBras = gridLayout
+        self.listGuiBras = listBras
 
 
     def createWidgetConfigurationBras(self):
 
-        self.vMainLayout.removeWidget(self.scrollArea)
-        self.scrollArea = None
         self.scrollArea = QtGui.QScrollArea()
         configurationBrasWidget = QtGui.QWidget()
         self.configurationBras()
@@ -224,6 +259,69 @@ class ScenarioCreator (QtGui.QWidget):
         self.scrollArea.setWidget(configurationBrasWidget)
         self.vMainLayout.insertWidget(4, self.scrollArea)
 
-    def showScenarioCreatorFrame(self):
-        self.show()
+    def getAlgorithmeSelected(self):
 
+        listAlgorithme = ""
+
+        if self.algoJoueur.isChecked():
+            listAlgorithme += '0 '
+
+        if self.algoHasard.isChecked():
+            listAlgorithme += '1 '
+
+        if self.algoGlouton.isChecked():
+            listAlgorithme += '2 '
+
+        if self.algoEpsilonGlouton.isChecked():
+            listAlgorithme += '3 '
+        if self.algoMoyenneGain.isChecked():
+            listAlgorithme += '4 '
+
+        if self.algoUCB.isChecked():
+            listAlgorithme += '5'
+
+        return listAlgorithme
+
+    def getOpion(self):
+
+        if self.radioButtonClassique.isChecked():
+            return 0
+        elif self.radioButtonDynamique.isChecked():
+            return 1
+        else:
+            return 2
+
+    def saveScenario(self):
+
+        with open("test1.sc", 'w') as writeFile:
+            writeFile.write(self.nombreBras.displayText() + "\n")
+            writeFile.write(self.nombreCoups.displayText() + "\n")
+            writeFile.write(self.getAlgorithmeSelected() + "\n")
+            writeFile.write(str(self.getOpion()) + "\n")
+            if self.getOpion() == 1:
+                writeFile.write(self.permutationLineEdit.displayText() + "\n")
+            elif self.getOpion() == 2:
+                writeFile.write(self.intervalleLineEdit.displayText() + "\n")
+
+            self.attributeValueForEmptyGuiBras()
+
+            for i in self.listGuiBras:
+                string = str(i[1]) + " " + str(i[2]) + "\n"
+                writeFile.write(string)
+
+        self.close()
+
+    def attributeValueForEmptyGuiBras(self):
+
+        for i in self.listGuiBras:
+            if type(i[1]) is str and type(i[2]) is str:
+                i[1] = format(random.random(), ".2f")
+                i[2] = format(random.random(), ".2f")
+            elif type(i[2]) is str:
+                i[2] = format(random.random(), ".2f")
+            elif type(i[1]) is str:
+                i[1] = format(random.random(), ".2f")
+
+    def showScenarioCreatorFrame(self):
+
+        self.show()
