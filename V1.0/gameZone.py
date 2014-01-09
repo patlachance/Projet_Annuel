@@ -32,6 +32,7 @@ class GameZone(QtGui.QWidget):
             self.scrollArea = QtGui.QScrollArea()
             widget.setLayout(self.initBoutJoueur())
             self.scrollArea.setWidget(widget)
+            self.scrollArea.setFixedWidth(710)
             self.boxJeu.addWidget(self.scrollArea)
             self.principal.addLayout(self.boxJeu)
 
@@ -60,14 +61,14 @@ class GameZone(QtGui.QWidget):
 
         labelGain = QtGui.QLabel("Gain")
         labelGain.setFont(font)
-        cadreGain.addWidget(labelGain,1,0)
+        cadreGain.addWidget(labelGain, 1, 0)
 
         self.resultatGain = QtGui.QLabel(format(0,'.2f'))
         self.resultatGain.setFont(font)
-        cadreGain.addWidget(self.resultatGain,1,1)
+        cadreGain.addWidget(self.resultatGain, 1, 1)
 
         self.labelGainEspere = QtGui.QLabel("Gain espéré")
-        cadreGain.addWidget(self.labelGainEspere,2,0)
+        cadreGain.addWidget(self.labelGainEspere, 2, 0)
         self.labelGainEspere.setVisible(False)
 
         self.resultatGainEspere = QtGui.QLabel(format(float(self.moteurJeu.gainEspere()),'.2f'))
@@ -94,20 +95,21 @@ class GameZone(QtGui.QWidget):
 
         for i in range(0, self.moteurJeu.nbBras):
             button = QtGui.QPushButton(str(i+1)) 
-            button.setFixedSize(60,60) 
+            button.setFixedSize(60, 60)
             button.setStyleSheet("background-image:url(button-red.png); color:white;")
             button.clicked.connect(self.buttonClicked)
-            cadreJoueur.addWidget(button, 2 + 5*int(i/10) , i % 10 )
-            #cadreJoueur.addWidget(self.listBout[i],3,i)
+            cadreJoueur.addWidget(button, 2 + 5*int(i/10), i % 10)
 
             if i % 10 == 0:   
                 labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
                 labelNombreCoupsBras.setStyleSheet("border: 0px;")
-                cadreJoueur.addWidget(labelNombreCoupsBras, 3 + 5*int(i/10), 0, 1,self.moteurJeu.nbBras)
+                cadreJoueur.addWidget(labelNombreCoupsBras, 3 + 5*int(i/10), 0, 1, self.moteurJeu.nbBras)
 
                 labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
                 labelGainMoyenBras.setStyleSheet("border: 0px;")
-                cadreJoueur.addWidget(labelGainMoyenBras, + 5*int(i/10), 0, 1,self.moteurJeu.nbBras)       
+                cadreJoueur.addWidget(labelGainMoyenBras, + 5*int(i/10), 0, 1, self.moteurJeu.nbBras)
+
+                cadreJoueur.setMargin(25)
         
         self.moyenneBras = []
         self.nombreFoisJoueBras = []

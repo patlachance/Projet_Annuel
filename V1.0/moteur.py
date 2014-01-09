@@ -110,7 +110,7 @@ class Moteur:
             self.listBras[i].gain = value_list[i][1]
 
         # Je redéfinis les bras de chaque algorithme.
-        for i in range(0, Moteur.nbAlgorithme):
-            self.listAlgorithme[i].redefinirBras(self.listBras)
+        for i in self.listAlgorithme:
+            i.redefinirBras(self.listBras)
 
 

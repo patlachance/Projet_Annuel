@@ -28,10 +28,12 @@ class MainWindow(QtGui.QMainWindow):
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
 
         centralWidgetPosition = self.centralWidget.frameGeometry()
+
         # centre la centralWidget par rapport à l'écran
         centralWidgetPosition.moveCenter(screenCenter)
 
         self.move(centralWidgetPosition.topLeft())
+
 
     def initCentralWidget(self, moteurJeu):
         """Méthode d'initialisation"""
@@ -41,10 +43,11 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.centralWidget)
         self.setMinimumSize(self.centralWidget.size())
         self.resize(self.centralWidget.size().width(), self.centralWidget.size().height()+100)
-        self.connect(self.centralWidget,QtCore.SIGNAL("resize(int)"),self.Resize)
+        self.connect(self.centralWidget, QtCore.SIGNAL("resize(int)"), self.Resize)
+
 
     def Resize(self, size):
-        self.resize(self.centralWidget.size().width(), self.centralWidget.size().height() + size +100)
+        self.resize(self.centralWidget.size().width(), self.centralWidget.size().height() + size + 100)
 
     def initMenuBar(self):
         """Initialisation de la menu bar"""

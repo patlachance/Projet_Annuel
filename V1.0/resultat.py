@@ -1,7 +1,6 @@
 from PyQt4 import QtGui,QtCore
 
 import moteur
-import sys
 
 class Resultat(QtGui.QWidget):
     
@@ -16,7 +15,7 @@ class Resultat(QtGui.QWidget):
         #Liste Bras Probabilité/Gain#
         #############################
         principal = QtGui.QGridLayout()
-        self.setStyleSheet(" border:1px solid #000000; ");
+        self.setStyleSheet(" border:1px solid #000000; ")
 
         for i in range(0,len(self.moteurJeu.listBras)):
             principal.addWidget(QtGui.QLabel(str(i + 1)),0,i+1)

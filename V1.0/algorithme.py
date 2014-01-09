@@ -105,7 +105,7 @@ class Algorithme:
             numMeilleurBras = -1
             gainMeilleurBras = -1        
             for i in range(0, self.nbBras):
-                if (self.esperanceVeritable(i) > gainMeilleurBras):
+                if self.esperanceVeritable(i) > gainMeilleurBras:
                     numMeilleurBras = i
                     gainMeilleurBras = self.esperanceVeritable(i)
             res = numMeilleurBras
@@ -142,19 +142,16 @@ class Algorithme:
                                 sequence[i] = 0
                                 sequence[i-1] += 1 
 
-
-                    #Maintenant, on a une séquence à tester. comment je vais faire moi ?
-                    # tiens, j'ai une idée : je vais créer une liste de scénario. comme ça, pas d'emmerdes ! \o/
                     scenario = []
                     #calcul du gain
                     gainTotalScenario = 0
                             
-                    for i in range(0,self.nbCoupsMax):
+                    for i in range(0, self.nbCoupsMax):
                         scenario.append(sequence[i % longueurSequence])                
                         gain = self.esperanceVeritable(scenario[i])
                     
                         # diminuer les gains selon l'historique (si intervalle > 0)
-                        if self.intervalle > 0 :     
+                        if self.intervalle > 0:
                             debutParcours = i - self.intervalle
                             if debutParcours < 0:
                                 debutParcours = 0
