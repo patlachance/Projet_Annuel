@@ -102,10 +102,10 @@ class Algorithme:
             numMeilleurBras = -1
             gainMeilleurBras = -1        
             for i in range(0, self.nbBras):
-                if (self.esperanceCalculee(i) > gainMeilleurBras):
+                if (self.esperanceVeritable(i) > gainMeilleurBras):
                     numMeilleurBras = i
-                    gainMeilleurBras = self.esperanceCalculee(i)
-            res = i
+                    gainMeilleurBras = self.esperanceVeritable(i)
+            res = numMeilleurBras
 
         else:
             # SI C'EST LE PREMIER APPEL DE LA FONCTION, LE CALCUL DE LA MEILLEURE SEQUENCE EST REALISE.
