@@ -46,7 +46,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setCentralWidget(self.centralWidget)
         self.setMinimumSize(self.centralWidget.size())
-        self.resize(self.centralWidget.size().width(), self.centralWidget.size().height()+50)
+        self.resize(self.centralWidget.size().width(), self.centralWidget.size().height()+100)
         self.setStyleSheet("background-color: #3c3b37;")
         self.connect(self.centralWidget,QtCore.SIGNAL("resize(int)"),self.Resize)
 
