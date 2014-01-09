@@ -15,11 +15,12 @@ class MainWindow(QtGui.QMainWindow):
         self.initUI()
         self.initMenuBar()
         self.initStatusBar()
+        self.setWindowTitle('Jeu du manchot')
         self.show()
 
     def initUI(self):
 
-        self.initCentralWidget(10, 50, [0, 1, 2, 3, 4, 5])
+        self.initCentralWidget(10, 10, [0, 1, 2, 3, 4, 5])
 
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
@@ -42,10 +43,14 @@ class MainWindow(QtGui.QMainWindow):
             self.centralWidget = gameZone.GameZone(args[0], args[1], args[2], args[3])
         else:
             self.centralWidget = gameZone.GameZone(args[0], args[1], args[2])
-        nnnnpouet = self.centralWidget.size()
-        self.resize(pouet.width() + 100, pouet.height())
         self.setCentralWidget(self.centralWidget)
+        self.setMinimumSize(self.centralWidget.size())
+        self.resize(self.centralWidget.size().width(), self.centralWidget.size().height()+50)
+        self.setStyleSheet("background-color: #3c3b37;")
+        self.connect(self.centralWidget,QtCore.SIGNAL("resize(int)"),self.Resize)
 
+    def Resize(self, size):
+        self.resize(self.centralWidget.size().width(), self.centralWidget.size().height() + size +100)
 
     def initMenuBar(self):
         """Initialisation de la menu bar"""
@@ -99,8 +104,6 @@ class MainWindow(QtGui.QMainWindow):
                 listAlgoNumber.append(algo.numAlgo)
                 
         self.initCentralWidget(self.centralWidget.moteurJeu.nbBras, self.centralWidget.moteurJeu.nbCoupsMax, listAlgoNumber)
-        if listAlgoNumber[0]!=0:
-            self.centralWidget.auto()
 
     def showLoadScenarioDialog(self):
         """Affiche la fenetre de chargement d'un scenario"""

@@ -15,6 +15,8 @@ class Algorithme:
         self.numAlgo = numAlgo
 
         self.historique = []
+        self.histoGain = []
+        self.histoGain.append(0)
                   
     def actionnerBras(self, numeroBras):
         """ Cette fonction actionne le bras demandé. Sauf dans le cas du gain espéré où le gain est ajouté directement."""
@@ -38,6 +40,7 @@ class Algorithme:
             gain *= (self.intervalle-nbFoisBrasActionne)/self.intervalle
 
         self.gain += gain
+        self.histoGain.append(self.gain)
         self.listBras[numeroBras].recupererVeritableGain(gain)
 
 
