@@ -28,8 +28,11 @@ class GameZone(QtGui.QWidget):
 
             self.boxJeu.addLayout(boxGain)
             self.boxJeu.addStretch(1)
-            self.boxJeu.addWidget(self.initBoutJoueur())
-
+            widget = QtGui.QWidget()
+            self.scrollArea = QtGui.QScrollArea()
+            widget.setLayout(self.initBoutJoueur())
+            self.scrollArea.setWidget(widget)
+            self.boxJeu.addWidget(self.scrollArea)
             self.principal.addLayout(self.boxJeu)
 
         else:
@@ -83,26 +86,30 @@ class GameZone(QtGui.QWidget):
         return groupAlgo
 
     def initBoutJoueur(self):
-
+        
         cadreJoueur = QtGui.QGridLayout()
         icon = QtGui.QIcon("bras.gif")
 
         self.listBout = []
 
-        for i in range(0,self.moteurJeu.nbBras):
-            self.listBout.append(QtGui.QPushButton(str(i+1)))   
-            self.listBout[i].setFixedSize(60,60) 
-            self.listBout[i].setStyleSheet("background-image:url(button-red.png); color:white;")
-            self.listBout[i].clicked.connect(self.buttonClicked)
-            cadreJoueur.addWidget(self.listBout[i],3,i)
-               
-        labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
-        labelGainMoyenBras.setStyleSheet("border: 0px;")
-        cadreJoueur.addWidget(labelGainMoyenBras,4,0,1,self.moteurJeu.nbBras)
+        for i in range(0, self.moteurJeu.nbBras):
+            button = QtGui.QPushButton(str(i+1)) 
+            button.setFixedSize(60,60) 
+            button.setStyleSheet("background-image:url(button-red.png); color:white;")
+            button.clicked.connect(self.buttonClicked)
+            cadreJoueur.addWidget(button, 2 + 5*int(i/10) , i % 10 )
+            #cadreJoueur.addWidget(self.listBout[i],3,i)
 
-        labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
-        labelNombreCoupsBras.setStyleSheet("border: 0px;")
-        cadreJoueur.addWidget(labelNombreCoupsBras,1,0,1,self.moteurJeu.nbBras)
+            if i % 10 == 0:   
+                labelNombreCoupsBras = QtGui.QLabel("Nombre de coups par bras ")
+                labelNombreCoupsBras.setStyleSheet("border: 0px;")
+                cadreJoueur.addWidget(labelNombreCoupsBras, 3 + 5*int(i/10), 0, 1,self.moteurJeu.nbBras)
+
+                labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
+                labelGainMoyenBras.setStyleSheet("border: 0px;")
+                cadreJoueur.addWidget(labelGainMoyenBras, + 5*int(i/10), 0, 1,self.moteurJeu.nbBras)
+
+        
         
         self.moyenneBras = []
         self.nombreFoisJoueBras = []
@@ -110,16 +117,13 @@ class GameZone(QtGui.QWidget):
         for i in range(0,self.moteurJeu.nbBras):
             self.moyenneBras.append(QtGui.QLabel(format(0, '.2f')))
             self.moyenneBras[i].setAlignment(QtCore.Qt.AlignCenter)
-            cadreJoueur.addWidget(self.moyenneBras[i],5,i)
+            cadreJoueur.addWidget(self.moyenneBras[i], 1 + 5*int(i/10), i % 10)
             
             self.nombreFoisJoueBras.append(QtGui.QLabel("0"))
             self.nombreFoisJoueBras[i].setAlignment(QtCore.Qt.AlignCenter)
-            cadreJoueur.addWidget(self.nombreFoisJoueBras[i],2,i)
+            cadreJoueur.addWidget(self.nombreFoisJoueBras[i], 4 + 5*int(i/10), i % 10)
 
-        self.groupBout = QtGui.QGroupBox("Liste des bras")
-        self.groupBout.setLayout(cadreJoueur)
-
-        return self.groupBout
+        return cadreJoueur
 
     def initAlgo(self):
         """ Partie Algo """
@@ -189,7 +193,7 @@ class GameZone(QtGui.QWidget):
         if self.moteurJeu.nombreCoupsJoue() == self.moteurJeu.nbCoupsMax:
             self.labelGainEspere.setVisible(True)
             self.resultatGainEspere.setVisible(True)
-            self.groupBout.setVisible(False)
+            self.scrollArea.setVisible(False)
             self.boxJeu.addWidget(resultat.Resultat(self.moteurJeu))
 
             self.principal.addWidget(graphe.Graphe(self.moteurJeu))
