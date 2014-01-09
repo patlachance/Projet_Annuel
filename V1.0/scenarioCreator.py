@@ -52,6 +52,7 @@ class ScenarioCreator (QtGui.QDialog):
         gridLayout1 = QtGui.QGridLayout()
         vLayout2 = QtGui.QVBoxLayout()
         gridLayoutAlgo = QtGui.QGridLayout()
+        hlayoutup = QtGui.QHBoxLayout()
         hlayoutConfiguration = QtGui.QHBoxLayout()
         hlayoutWindowButton = QtGui.QHBoxLayout()
 
@@ -74,24 +75,26 @@ class ScenarioCreator (QtGui.QDialog):
         gridLayout1.addWidget(self.nombreBras, 0, 1)
         gridLayout1.addWidget(self.nombreCoupsLabel, 1, 0)
         gridLayout1.addWidget(self.nombreCoups, 1, 1)
-        gridLayout1.setColumnStretch(2, 1)
+        gridLayout1.setRowStretch(2, 0)
 
         vLayout2.addWidget(self.radioButtonClassique)
         vLayout2.addWidget(self.radioButtonDynamique)
         vLayout2.addWidget(self.radioButtonDiminution)
+        vLayout2.addLayout(hlayoutConfiguration)
 
         hlayoutConfiguration.addWidget(self.nombrePermutationLabel)
         hlayoutConfiguration.addWidget(self.permutationLineEdit)
         hlayoutConfiguration.addWidget(self.nombreIntervalleLabel)
         hlayoutConfiguration.addWidget(self.intervalleLineEdit)
 
-        gridLayoutAlgo.addWidget(self.algorithmeLabel, 0, 0, 1, 2)
+        gridLayoutAlgo.addWidget(self.algorithmeLabel, 0, 0)
         gridLayoutAlgo.addWidget(self.algoJoueur, 1, 0)
         gridLayoutAlgo.addWidget(self.algoHasard, 1, 1)
         gridLayoutAlgo.addWidget(self.algoGlouton, 2, 0)
         gridLayoutAlgo.addWidget(self.algoEpsilonGlouton, 2, 1,)
         gridLayoutAlgo.addWidget(self.algoMoyenneGain, 3, 0)
         gridLayoutAlgo.addWidget(self.algoUCB, 3, 1)
+        gridLayoutAlgo.setColumnStretch(4, 1)
 
         hlayoutWindowButton.addWidget(self.cancel)
         hlayoutWindowButton.addWidget(self.validate)
@@ -114,10 +117,14 @@ class ScenarioCreator (QtGui.QDialog):
         self.cancel.setFixedWidth(75)
         self.validate.setFixedWidth(75)
 
-        self.vMainLayout.addLayout(gridLayout1)
-        self.vMainLayout.addLayout(vLayout2)
-        self.vMainLayout.addLayout(hlayoutConfiguration)
-        self.vMainLayout.addLayout(gridLayoutAlgo)
+        hlayoutup.addLayout(gridLayout1)
+        hlayoutup.addStretch(1)
+        hlayoutup.addLayout(vLayout2)
+        hlayoutup.addStretch(1)
+        hlayoutup.addLayout(gridLayoutAlgo)
+
+        self.vMainLayout.addLayout(hlayoutup)
+
         self.createWidgetConfigurationBras()
         self.vMainLayout.addLayout(hlayoutWindowButton)
 
@@ -259,7 +266,7 @@ class ScenarioCreator (QtGui.QDialog):
         self.configurationBras()
         configurationBrasWidget.setLayout(self.gridLayoutConfigBras)
         self.scrollArea.setWidget(configurationBrasWidget)
-        self.vMainLayout.insertWidget(4, self.scrollArea)
+        self.vMainLayout.insertWidget(1, self.scrollArea)
 
     def getAlgorithmeSelected(self):
 
