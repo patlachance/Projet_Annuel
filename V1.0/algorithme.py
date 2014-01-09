@@ -203,33 +203,6 @@ class Algorithme:
 
         return res
 
-
-    def algoMoyenneGain(self):
-        jeuApprentissage = 0.5 # 50% du nombre de coups max sera utilisé pour connaitre le meilleur bras.  
-        if self.nbCoupsJoue < jeuApprentissage*self.nbCoupsMax :
-            res = self.nbCoupsJoue % len(self.listBras)
-        else:
-            #calcul de la somme des espérances
-            sumEsperance = 0
-            for i in range(0,len(self.listBras)):
-                sumEsperance += self.esperanceCalculee(i)
-
-            # nombre aléatoire calcul
-            r = random.uniform(0,sumEsperance)
-
-            somme=0
-            i=0
-
-            while somme < r:
-                somme += self.esperanceCalculee(i)        
-                if somme >= r:
-                    res = i
-                else:
-                    i += 1
-
-        return res
-
-
     def algoMoyenneGain(self):
         """ Algorithme choisissant un bras au prorata de sa moyenne """
  
@@ -247,11 +220,13 @@ class Algorithme:
 
             somme=0
             i=0
-
-            while somme < r:
+            
+            continuer = True
+            while continuer:
                 somme += self.esperanceCalculee(i)        
                 if somme >= r:
                     res = i
+                    continuer = False
                 else:
                     i += 1
 
