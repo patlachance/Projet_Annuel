@@ -107,9 +107,7 @@ class GameZone(QtGui.QWidget):
 
                 labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
                 labelGainMoyenBras.setStyleSheet("border: 0px;")
-                cadreJoueur.addWidget(labelGainMoyenBras, + 5*int(i/10), 0, 1,self.moteurJeu.nbBras)
-
-        
+                cadreJoueur.addWidget(labelGainMoyenBras, + 5*int(i/10), 0, 1,self.moteurJeu.nbBras)       
         
         self.moyenneBras = []
         self.nombreFoisJoueBras = []
