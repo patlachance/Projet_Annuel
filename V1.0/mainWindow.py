@@ -43,6 +43,7 @@ class MainWindow(QtGui.QMainWindow):
             self.centralWidget = gameZone.GameZone(args[0], args[1], args[2], args[3])
         else:
             self.centralWidget = gameZone.GameZone(args[0], args[1], args[2])
+
         self.setCentralWidget(self.centralWidget)
         self.setMinimumSize(self.centralWidget.size())
         self.resize(self.centralWidget.size().width(), self.centralWidget.size().height()+50)
