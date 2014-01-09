@@ -1,5 +1,6 @@
 import random
 import copy
+from PyQt4 import QtGui, QtCore
 from math import sqrt, log
 
 
@@ -95,7 +96,8 @@ class Algorithme:
     def algoGainEspere(self):
         """ Algorithme utilisé pour calculer le gain espéré (ORACLE)"""    
         # SI C'EST LE PREMIER APPEL DE LA FONCTION, LE CALCUL DE LA MEILLEURE SEQUENCE EST REALISE.
-        if self.nbCoupsJoue == 0:        
+        if self.nbCoupsJoue == 0:    
+
             numSequence = 0
             gainMaxScenario = 0
             sequence = []
@@ -128,12 +130,11 @@ class Algorithme:
                 #Maintenant, on a une séquence à tester. comment je vais faire moi ?
                 # tiens, j'ai une idée : je vais créer une liste de scénario. comme ça, pas d'emmerdes ! \o/
                 scenario = []
-                for i in range(0,self.nbCoupsMax):
-                    scenario.append(sequence[i % longueurSequence])                
-
                 #calcul du gain
                 gainTotalScenario = 0
+                        
                 for i in range(0,self.nbCoupsMax):
+                    scenario.append(sequence[i % longueurSequence])                
                     gain = self.esperanceVeritable(scenario[i])
                 
                     # diminuer les gains selon l'historique (si intervalle > 0)
