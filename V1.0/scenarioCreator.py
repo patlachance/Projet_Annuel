@@ -2,6 +2,7 @@ from PyQt4 import QtGui, QtCore
 import guiBras
 import random
 import moteur
+import bras
 
 
 class ScenarioCreator (QtGui.QDialog):
@@ -50,8 +51,9 @@ class ScenarioCreator (QtGui.QDialog):
 
 
         gridLayout1 = QtGui.QGridLayout()
-        gridLayout2 = QtGui.QGridLayout()
+        vLayout2 = QtGui.QVBoxLayout()
         gridLayoutAlgo = QtGui.QGridLayout()
+        hlayoutup = QtGui.QHBoxLayout()
         hlayoutConfiguration = QtGui.QHBoxLayout()
         hlayoutWindowButton = QtGui.QHBoxLayout()
 
@@ -74,25 +76,26 @@ class ScenarioCreator (QtGui.QDialog):
         gridLayout1.addWidget(self.nombreBras, 0, 1)
         gridLayout1.addWidget(self.nombreCoupsLabel, 1, 0)
         gridLayout1.addWidget(self.nombreCoups, 1, 1)
-        gridLayout1.setColumnStretch(2, 1)
+        gridLayout1.setRowStretch(2, 0)
 
-        gridLayout2.addWidget(self.configurationLabel, 2, 0, 1, 3, QtCore.Qt.AlignCenter)
-        gridLayout2.addWidget(self.radioButtonClassique, 3, 0)
-        gridLayout2.addWidget(self.radioButtonDynamique, 3, 1)
-        gridLayout2.addWidget(self.radioButtonDiminution, 3, 2)
+        vLayout2.addWidget(self.radioButtonClassique)
+        vLayout2.addWidget(self.radioButtonDynamique)
+        vLayout2.addWidget(self.radioButtonDiminution)
+        vLayout2.addLayout(hlayoutConfiguration)
 
         hlayoutConfiguration.addWidget(self.nombrePermutationLabel)
         hlayoutConfiguration.addWidget(self.permutationLineEdit)
         hlayoutConfiguration.addWidget(self.nombreIntervalleLabel)
         hlayoutConfiguration.addWidget(self.intervalleLineEdit)
 
-        gridLayoutAlgo.addWidget(self.algorithmeLabel, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
+        gridLayoutAlgo.addWidget(self.algorithmeLabel, 0, 0)
         gridLayoutAlgo.addWidget(self.algoJoueur, 1, 0)
         gridLayoutAlgo.addWidget(self.algoHasard, 1, 1)
         gridLayoutAlgo.addWidget(self.algoGlouton, 2, 0)
         gridLayoutAlgo.addWidget(self.algoEpsilonGlouton, 2, 1,)
         gridLayoutAlgo.addWidget(self.algoMoyenneGain, 3, 0)
         gridLayoutAlgo.addWidget(self.algoUCB, 3, 1)
+        gridLayoutAlgo.setColumnStretch(4, 1)
 
         hlayoutWindowButton.addWidget(self.cancel)
         hlayoutWindowButton.addWidget(self.validate)
@@ -117,10 +120,14 @@ class ScenarioCreator (QtGui.QDialog):
         self.validate.setFixedWidth(75)
         self.save.setFixedWidth(100)
 
-        self.vMainLayout.addLayout(gridLayout1)
-        self.vMainLayout.addLayout(gridLayout2)
-        self.vMainLayout.addLayout(hlayoutConfiguration)
-        self.vMainLayout.addLayout(gridLayoutAlgo)
+        hlayoutup.addLayout(gridLayout1)
+        hlayoutup.addStretch(1)
+        hlayoutup.addLayout(vLayout2)
+        hlayoutup.addStretch(1)
+        hlayoutup.addLayout(gridLayoutAlgo)
+
+        self.vMainLayout.addLayout(hlayoutup)
+
         self.createWidgetConfigurationBras()
         self.vMainLayout.addLayout(hlayoutWindowButton)
 
@@ -159,12 +166,15 @@ class ScenarioCreator (QtGui.QDialog):
             if algo.isChecked():
                 listAlgoNumber.append(i)
 
+        self.attributeValueForEmptyGuiBras()
+        liste_bras = self.createListBras()
+
         if self.radioButtonClassique.isChecked():
-            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 0))
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 0, liste_bras))
         elif self.radioButtonDynamique.isChecked():
-            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 1, int(self.permutationLineEdit.displayText())))
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 1, int(self.permutationLineEdit.displayText()), liste_bras))
         elif self.radioButtonDiminution.isChecked():
-            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 2, int(self.intervalleLineEdit.displayText())))
+            self.parent.initCentralWidget(moteur.Moteur(int(self.nombreBras.displayText()), int(self.nombreCoups.displayText()), listAlgoNumber, 2, int(self.intervalleLineEdit.displayText()), liste_bras))
 
         self.close()
 
@@ -186,7 +196,6 @@ class ScenarioCreator (QtGui.QDialog):
             self.permutationLineEdit.show()
             self.nombreIntervalleLabel.hide()
             self.intervalleLineEdit.hide()
-
 
         if sender == self.radioButtonDiminution:
             self.nombrePermutationLabel.hide()
@@ -261,7 +270,7 @@ class ScenarioCreator (QtGui.QDialog):
         self.configurationBras()
         configurationBrasWidget.setLayout(self.gridLayoutConfigBras)
         self.scrollArea.setWidget(configurationBrasWidget)
-        self.vMainLayout.insertWidget(4, self.scrollArea)
+        self.vMainLayout.insertWidget(1, self.scrollArea)
 
     def getAlgorithmeSelected(self):
 
@@ -320,12 +329,21 @@ class ScenarioCreator (QtGui.QDialog):
 
         for i in self.listGuiBras:
             if type(i[1]) is str and type(i[2]) is str:
-                i[1] = format(random.random(), ".2f")
-                i[2] = format(random.random(), ".2f")
+                i[1] = float(format(random.random(), ".2f"))
+                i[2] = float(format(random.random(), ".2f"))
             elif type(i[2]) is str:
-                i[2] = format(random.random(), ".2f")
+                i[2] = float(format(random.random(), ".2f"))
             elif type(i[1]) is str:
-                i[1] = format(random.random(), ".2f")
+                i[1] = float(format(random.random(), ".2f"))
+
+    def createListBras(self):
+
+        liste_bras = []
+
+        for i in self.listGuiBras:
+            liste_bras.append(bras.Bras(i[1], i[2]))
+
+        return liste_bras
 
     def showScenarioCreatorFrame(self):
 
