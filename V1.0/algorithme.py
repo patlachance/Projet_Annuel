@@ -102,9 +102,9 @@ class Algorithme:
             numMeilleurBras = -1
             gainMeilleurBras = -1        
             for i in range(0, self.nbBras):
-                if (self.esperanceCalculee(self.listBras[i]) > gainMeilleurBras):
+                if (self.esperanceCalculee(i) > gainMeilleurBras):
                     numMeilleurBras = i
-                    gainMeilleurBras = self.esperanceCalculee(self.listBras[i])
+                    gainMeilleurBras = self.esperanceCalculee(i)
             res = i
 
         else:
