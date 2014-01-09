@@ -4,24 +4,11 @@ import moteur, resultat, graphe
 
 class GameZone(QtGui.QWidget):
     
-    def __init__(self, *args):
+    def __init__(self, moteurJeu):
 
         super(GameZone, self).__init__()
 
-        #args[0] = nbBras
-        #args[1] = nbCoups
-        #args[2] = listAlgorithme
-        #args[3] = listBras
-
-        self.listAlgo = args[2]
-
-        if len(args) == 4:
-            self.moteurJeu = moteur.Moteur(args[0], args[1], args[2], args[3])
-        else:
-            self.moteurJeu = moteur.Moteur(args[0], args[1], args[2])
-
-        self.RESIZE = QtCore.pyqtSignal()
-
+        self.moteurJeu = moteurJeu
         self.initUI()
         self.setStyleSheet("background-color: #DFF2FF;")
 
@@ -57,7 +44,6 @@ class GameZone(QtGui.QWidget):
             self.principal.addLayout(pouet)
 
             self.principal.addWidget(graphe.Graphe(self.moteurJeu))
-            
         
         self.setLayout(self.principal)
         self.show()
@@ -140,37 +126,37 @@ class GameZone(QtGui.QWidget):
     def initAlgo(self):
         """ Partie Algo """
 
-        if (((self.listAlgo[0]==0) and (len(self.listAlgo)!=1))or(self.listAlgo[0]!=0)):
+        if (((self.moteurJeu.listAlgorithme[0].numAlgo == 0) and (len(self.moteurJeu.listAlgorithme)!= 1)) or (self.moteurJeu.listAlgorithme[0].numAlgo != 0)):
             cadreGainAlgo = QtGui.QGridLayout()
-            cadreGainAlgo.setColumnStretch(3,1)
+            cadreGainAlgo.setColumnStretch(3, 1)
 
             self.listResAlgo = []
             
-            if self.listAlgo[0]==0:
-                tmp=1
+            if self.moteurJeu.listAlgorithme[0].numAlgo == 0:
+                tmp = 1
             else:
-                tmp=0
+                tmp = 0
 
-            for i in  range(tmp,len(self.listAlgo)):
+            for i in range(tmp, len(self.moteurJeu.listAlgorithme)):
 
-                if self.listAlgo[i] == 1:
+                if self.moteurJeu.listAlgorithme[i].numAlgo == 1:
                     labelAlgo = QtGui.QLabel("Gain Algo hasard")
-                    cadreGainAlgo.addWidget(labelAlgo,i-tmp,0)
-                if self.listAlgo[i] == 2:
+                    cadreGainAlgo.addWidget(labelAlgo, i-tmp, 0)
+                if self.moteurJeu.listAlgorithme[i].numAlgo == 2:
                     labelAlgo = QtGui.QLabel("Gain Algo Glouton")
-                    cadreGainAlgo.addWidget(labelAlgo,i-tmp,0)
-                if self.listAlgo[i] == 3:
+                    cadreGainAlgo.addWidget(labelAlgo, i-tmp, 0)
+                if self.moteurJeu.listAlgorithme[i].numAlgo == 3:
                     labelAlgo = QtGui.QLabel("Gain Algo Espilon")
-                    cadreGainAlgo.addWidget(labelAlgo,i-tmp,0)
-                if self.listAlgo[i] == 4:
+                    cadreGainAlgo.addWidget(labelAlgo, i-tmp, 0)
+                if self.moteurJeu.listAlgorithme[i].numAlgo == 4:
                     labelAlgo = QtGui.QLabel("Gain Algo Moyenne Gain")
-                    cadreGainAlgo.addWidget(labelAlgo,i-tmp,0)
-                if self.listAlgo[i] == 5:
+                    cadreGainAlgo.addWidget(labelAlgo, i-tmp, 0)
+                if self.moteurJeu.listAlgorithme[i].numAlgo == 5:
                     labelAlgo = QtGui.QLabel("Gain Algo UCB")
-                    cadreGainAlgo.addWidget(labelAlgo,i-tmp,0)
+                    cadreGainAlgo.addWidget(labelAlgo, i-tmp, 0)
 
-                self.listResAlgo.append(QtGui.QLabel(format(0,'.2f')))
-                cadreGainAlgo.addWidget(self.listResAlgo[i-tmp],i-tmp,1)
+                self.listResAlgo.append(QtGui.QLabel(format(0, '.2f')))
+                cadreGainAlgo.addWidget(self.listResAlgo[i-tmp], i-tmp, 1)
 
             algo = QtGui.QHBoxLayout()
             algo.addLayout(cadreGainAlgo)
@@ -186,6 +172,15 @@ class GameZone(QtGui.QWidget):
       
         sender = self.sender()
         num = int(sender.text()) - 1
+
+        if self.moteurJeu.option == 1:
+            modulo = self.moteurJeu.nombreCoupsJoue() % self.moteurJeu.permutation
+            dividende = self.moteurJeu.nombreCoupsJoue() / self.moteurJeu.permutation
+
+            if modulo == 0 and self.moteurJeu.nombreCoupsJoue() > 0:
+                if dividende*self.moteurJeu.permutation == self.moteurJeu.nombreCoupsJoue():
+                    self.moteurJeu.permutationBras()
+
         self.moteurJeu.actionnerBrasJoueur(num)
         self.moteurJeu.lancerAlgo(1)
         self.moyenneBras[num].setText(str(format(self.moteurJeu.esperanceJoueur(num),'.2f')))
@@ -205,11 +200,11 @@ class GameZone(QtGui.QWidget):
             self.emit(QtCore.SIGNAL("resize(int)"), self.size().height())
 
     def auto(self):
-        for i in range(0,self.moteurJeu.nbCoupsMax):
+        for i in range(0, self.moteurJeu.nbCoupsMax):
             self.moteurJeu.lancerAlgo(0)
         self.affichageAlgo(0)
 
-    def affichageAlgo(self,tmp):
-        for i in range(tmp,len(self.listAlgo)):
-            self.listResAlgo[i-tmp].setText(str(format(self.moteurJeu.gain(i),'.2f')))
+    def affichageAlgo(self, tmp):
+        for i in range(tmp, len(self.moteurJeu.listAlgorithme)):
+            self.listResAlgo[i-tmp].setText(str(format(self.moteurJeu.gain(i), '.2f')))
         
