@@ -3,7 +3,6 @@ import sys
 import gameZone
 import moteur
 import scenarioLoader
-import configurationFrame
 import scenarioCreator
 
 class MainWindow(QtGui.QMainWindow):
@@ -23,11 +22,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def initUI(self):
 
-<<<<<<< HEAD
-        self.initCentralWidget(10, 10, [0, 1, 2, 3, 4, 5])
-=======
         self.initCentralWidget(moteur.Moteur(10, 50, [0, 1, 2, 3, 4, 5], 0))
->>>>>>> 29701a0462376e207b51a9e8bad9f3bbf45c319f
 
         # Recuperation du centre de l'écran de l'utilisateur
         screenCenter = QtGui.QDesktopWidget().availableGeometry().center()
@@ -41,21 +36,11 @@ class MainWindow(QtGui.QMainWindow):
     def initCentralWidget(self, moteurJeu):
         """Méthode d'initialisation"""
 
-<<<<<<< HEAD
-        #args[0] = nbBras
-        #args[1] = nbCoups
-        #args[2] = listAlgorithme
-        #args[3] = listBras
-
-        if len(args) == 4:
-            self.centralWidget = gameZone.GameZone(args[0], args[1], args[2], args[3])
-        else:
-            self.centralWidget = gameZone.GameZone(args[0], args[1], args[2])
+        self.centralWidget = gameZone.GameZone(moteurJeu)
 
         self.setCentralWidget(self.centralWidget)
         self.setMinimumSize(self.centralWidget.size())
         self.resize(self.centralWidget.size().width(), self.centralWidget.size().height()+100)
-        self.setStyleSheet("background-color: #3c3b37;")
         self.connect(self.centralWidget,QtCore.SIGNAL("resize(int)"),self.Resize)
 
     def Resize(self, size):

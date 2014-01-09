@@ -3,12 +3,13 @@ import random
 
 class GuiBras(QtGui.QWidget):
 
-    def __init__(self, validateButton):
+    def __init__(self, validateButton, saveButton):
         super(GuiBras, self).__init__()
 
         self.index = -1
         self.infoGuiBras = []
         self.validateButton = validateButton
+        self.saveButton = saveButton
         self.labelBras = QtGui.QLabel()
         self.probaLabel = QtGui.QLabel("Probabilité ")
         self.gainLabel = QtGui.QLabel("Gain ")
@@ -86,6 +87,7 @@ class GuiBras(QtGui.QWidget):
             self.setInfoGuiBras(self.index, '', gain)
 
         self.emit(QtCore.SIGNAL(self.validateButton.setDisabled(not (validityProba and validityGain))))
+        self.emit(QtCore.SIGNAL(self.saveButton.setDisabled(not (validityProba and validityGain))))
 
 
     def randomButton(self):
@@ -111,7 +113,10 @@ class GuiBras(QtGui.QWidget):
             if gain < 0 or gain > 1:
                 validityGain = False
 
-        if validityGain:
+        if validityGain and validityProba:
+            self.proba.setText(str(format(random.random(), '.2f')))
+            self.gain.setText(str(format(random.random(), '.2f')))
+        elif validityGain:
             self.proba.setText(str(format(random.random(), '.2f')))
         elif validityProba:
             self.gain.setText(str(format(random.random(), '.2f')))

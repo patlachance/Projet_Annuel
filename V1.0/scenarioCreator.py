@@ -40,6 +40,7 @@ class ScenarioCreator (QtGui.QDialog):
         self.gridLayoutConfigBras = QtGui.QGridLayout()
         self.validate = QtGui.QPushButton("Valider")
         self.cancel = QtGui.QPushButton("Annuler")
+        self.save = QtGui.QPushButton("Sauvegarder")
 
         self.showDialogConfiguration()
 
@@ -95,6 +96,7 @@ class ScenarioCreator (QtGui.QDialog):
 
         hlayoutWindowButton.addWidget(self.cancel)
         hlayoutWindowButton.addWidget(self.validate)
+        hlayoutWindowButton.addWidget(self.save)
 
         self.nombreBras.setText("5")
         self.nombreCoups.setText("10")
@@ -113,6 +115,7 @@ class ScenarioCreator (QtGui.QDialog):
         self.intervalleLineEdit.setFixedWidth(75)
         self.cancel.setFixedWidth(75)
         self.validate.setFixedWidth(75)
+        self.save.setFixedWidth(100)
 
         self.vMainLayout.addLayout(gridLayout1)
         self.vMainLayout.addLayout(gridLayout2)
@@ -127,7 +130,7 @@ class ScenarioCreator (QtGui.QDialog):
         # Events
         self.cancel.clicked.connect(self.close)
         self.validate.clicked.connect(lambda: self.validateConfiguration(listAlgorithme))
-        #self.validate.clicked.connect(self.saveScenario)
+        self.save.clicked.connect(self.saveScenario)
         self.cancel.setFocusPolicy(QtCore.Qt.NoFocus)
         self.radioButtonClassique.clicked.connect(self.checkValidityLineEdit)
         self.radioButtonDynamique.clicked.connect(self.checkValidityLineEdit)
@@ -215,6 +218,7 @@ class ScenarioCreator (QtGui.QDialog):
                 validity = False
 
             self.emit(QtCore.SIGNAL(self.validate.setDisabled(not validity)))
+            self.emit(QtCore.SIGNAL(self.save.setDisabled(not validity)))
 
 
     def createDynamicArms(self):
@@ -241,7 +245,7 @@ class ScenarioCreator (QtGui.QDialog):
         listBras =[]
 
         for i in range(0, nombreBras):
-            b = guiBras.GuiBras(self.validate)
+            b = guiBras.GuiBras(self.validate, self.save)
             b.setLabelBras(i)
             b.setInfoGuiBras(i, '', '')
             listBras.append(b.getInfoGuiBras())
@@ -293,7 +297,8 @@ class ScenarioCreator (QtGui.QDialog):
 
     def saveScenario(self):
 
-        with open("test1.sc", 'w') as writeFile:
+        saveTmp = QtGui.QFileDialog.getSaveFileName(self, "Save file", "", ".sc")
+        with open(saveTmp, 'w') as writeFile:
             writeFile.write(self.nombreBras.displayText() + "\n")
             writeFile.write(self.nombreCoups.displayText() + "\n")
             writeFile.write(self.getAlgorithmeSelected() + "\n")

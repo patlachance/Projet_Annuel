@@ -10,7 +10,6 @@ class GameZone(QtGui.QWidget):
 
         self.moteurJeu = moteurJeu
         self.initUI()
-        self.setStyleSheet("background-color: #DFF2FF;")
 
     def initUI(self):
         """ Fenetre principale de la gamezone """
@@ -81,7 +80,6 @@ class GameZone(QtGui.QWidget):
 
         groupAlgo = QtGui.QGroupBox("Partie Joueur")
         groupAlgo.setLayout(cadreGain)
-        #groupAlgo.setStyleSheet("background-color: #DFF2FF;")
         return groupAlgo
 
     def initBoutJoueur(self):
@@ -163,7 +161,6 @@ class GameZone(QtGui.QWidget):
 
             groupAlgo = QtGui.QGroupBox("Partie Algo")
             groupAlgo.setLayout(algo)
-            #groupAlgo.setStyleSheet("background-color: #DFF2FF;")
             return groupAlgo
         else:
             return QtGui.QLabel("")
