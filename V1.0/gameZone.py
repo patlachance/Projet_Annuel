@@ -69,10 +69,10 @@ class GameZone(QtGui.QWidget):
 
             for i in range(0, self.moteurJeu.nbBras):
                 self.listBout.append(QtGui.QPushButton(str(i+1)))   
-                self.listBout[i].setFixedSize(60,60) 
+                self.listBout[i].setFixedSize(60, 60)
                 self.listBout[i].setStyleSheet("background-image:url(button-red.png); color:white;")
                 self.listBout[i].clicked.connect(self.buttonClicked)
-                cadreJoueur.addWidget(self.listBout[i],3,i)
+                cadreJoueur.addWidget(self.listBout[i], 3, i)
                    
             labelGainMoyenBras = QtGui.QLabel("Gain moyen par bras : ")
             labelGainMoyenBras.setStyleSheet("border: 0px;")
