@@ -39,13 +39,21 @@ class Moteur:
             else:
                 self.intervalle = 4 #valeur par défaut
 
-        if len(args) >= 6:
-            self.listBras = args[5]
+        if self.option == 0:
+            if len(args) == 5:
+                self.listBras = args[4]
+            else:
+                #Initialisation de la liste listBras
+                for i in range(0, self.nbBras):
+                    self.listBras.append(bras.Bras())
 
-        else:
-            #Initialisation de la liste listBras
-            for i in range(0, self.nbBras):
-                self.listBras.append(bras.Bras())
+        elif self.option == 1 or self.option == 2:
+            if len(args) == 6:
+                self.listBras = args[5]
+            else:
+                #Initialisation de la liste listBras
+                for i in range(0, self.nbBras):
+                    self.listBras.append(bras.Bras())
 
         #initialisation des algorithmes.
         for i in args[2]:

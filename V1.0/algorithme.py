@@ -102,7 +102,7 @@ class Algorithme:
             gainMaxScenario = 0
             sequence = []
        
-            while numSequence < self.nbSequenceMax :
+            while numSequence < self.nbSequenceMax:
                 numSequence += 1
                 longueurSequence = len(sequence)
 

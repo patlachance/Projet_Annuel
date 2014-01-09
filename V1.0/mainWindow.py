@@ -3,7 +3,6 @@ import sys
 import gameZone
 import moteur
 import scenarioLoader
-import configurationFrame
 import scenarioCreator
 
 class MainWindow(QtGui.QMainWindow):
