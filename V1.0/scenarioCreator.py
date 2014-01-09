@@ -178,9 +178,6 @@ class ScenarioCreator (QtGui.QDialog):
 
         self.close()
 
-        if listAlgoNumber[0] != 0:
-            self.centralWidget.auto()
-
     def checkValidityLineEdit(self):
 
         sender = self.sender()
