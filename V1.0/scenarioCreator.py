@@ -304,7 +304,7 @@ class ScenarioCreator (QtGui.QDialog):
     def saveScenario(self):
 
         saveTmp = QtGui.QFileDialog.getSaveFileName(self, "Save file", "", ".sc")
-        with open(saveTmp, 'w') as writeFile:
+        with open(saveTmp+".sc", 'w') as writeFile:
             writeFile.write(self.nombreBras.displayText() + "\n")
             writeFile.write(self.nombreCoups.displayText() + "\n")
             writeFile.write(self.getAlgorithmeSelected() + "\n")
