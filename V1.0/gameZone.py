@@ -38,13 +38,13 @@ class GameZone(QtGui.QWidget):
 
         else:
 
-            pouet = QtGui.QHBoxLayout()
-            pouet.addWidget(self.initAlgo())
+            zoneRes = QtGui.QHBoxLayout()
+            zoneRes.addWidget(self.initAlgo())
             self.auto()     
-            pouet.addStretch(1)
-            pouet.addWidget(resultat.Resultat(self.moteurJeu))
+            zoneRes.addStretch(1)
+            zoneRes.addWidget(resultat.Resultat(self.moteurJeu))
 
-            self.principal.addLayout(pouet)
+            self.principal.addLayout(zoneRes)
 
             self.principal.addWidget(graphe.Graphe(self.moteurJeu))
         
@@ -160,6 +160,18 @@ class GameZone(QtGui.QWidget):
                 self.listResAlgo.append(QtGui.QLabel(format(0, '.2f')))
                 cadreGainAlgo.addWidget(self.listResAlgo[i-tmp], i-tmp, 1)
 
+            if self.moteurJeu.listAlgorithme[0].numAlgo != 0:
+                font=QtGui.QFont()
+                font.setBold(True)
+
+                self.labelGainEspere = QtGui.QLabel("Gain espéré")
+                self.labelGainEspere.setFont(font)
+                cadreGainAlgo.addWidget(self.labelGainEspere, len(self.moteurJeu.listAlgorithme), 0)
+
+                self.resultatGainEspere = QtGui.QLabel(format(float(self.moteurJeu.gainEspere()),'.2f'))
+                self.resultatGainEspere.setFont(font)
+                cadreGainAlgo.addWidget(self.resultatGainEspere,len(self.moteurJeu.listAlgorithme),1)
+
             algo = QtGui.QHBoxLayout()
             algo.addLayout(cadreGainAlgo)
 
@@ -198,7 +210,7 @@ class GameZone(QtGui.QWidget):
 
             self.principal.addWidget(graphe.Graphe(self.moteurJeu))
         
-            self.emit(QtCore.SIGNAL("resize(int)"), self.size().height())
+            self.emit(QtCore.SIGNAL("change(int)"), self.size().height())
 
     def auto(self):
         for i in range(0, self.moteurJeu.nbCoupsMax):
